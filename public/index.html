@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MenuMargin AI — Real-Time Food Cost & Margin Intelligence with Google Gemma</title>
+  <meta name="description" content="Stop kitchen margin leakage from wholesale inflation. Live plate costing, invoice OCR, and culinary recipe optimization powered by Google Gemma open-weight AI.">
+  
+  <!-- Modern Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="theme-dark">
+  <!-- Top App Navigation Bar -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-group">
+        <div class="brand-logo-badge">
+          <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+          <span class="sparkle-dot"></span>
+        </div>
+        <div class="brand-text">
+          <div class="brand-title-wrap">
+            <h1 class="brand-name">MenuMargin <span class="accent-gradient">AI</span></h1>
+            <span class="badge-pill partner-badge" id="gemmaModelBadge">
+              <span class="gemma-star">✦</span> Gemma 2 (Open-Weight)
+            </span>
+          </div>
+          <p class="brand-tagline">Real-Time Culinary Food Costing & Inflation Shield</p>
+        </div>
+      </div>
+
+      <!-- Center: Business Profile Switcher -->
+      <div class="profile-switcher-wrap">
+        <label for="profileSelect" class="profile-label">Active Kitchen:</label>
+        <div class="custom-select-wrap">
+          <select id="profileSelect" class="profile-select" aria-label="Select Kitchen Profile">
+            <!-- Dynamically populated -->
+          </select>
+          <span class="select-chevron">▾</span>
+        </div>
+      </div>
+
+      <!-- Right: System Status & Quick Actions -->
+      <div class="header-actions">
+        <div class="status-indicator-pill" id="systemStatusPill" title="Connected to Google Gemma AI engine">
+          <span class="status-dot pulsing"></span>
+          <span class="status-text" id="statusText">Gemma 2: Active</span>
+        </div>
+
+        <button class="btn btn-secondary btn-sm" id="btnPartnerInfo" title="View Partner & Open Innovation Architecture">
+          <span class="btn-icon">⚡</span> Architecture
+        </button>
+
+        <button class="btn btn-primary btn-sm" id="btnScanInvoiceHeader">
+          <span class="btn-icon">🧾</span> Scan Invoice
+        </button>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs Bar -->
+    <nav class="nav-tabs-bar" aria-label="Main Navigation">
+      <div class="nav-container">
+        <button class="nav-tab active" data-tab="dashboard" id="tabBtnDashboard">
+          <span class="tab-icon">📊</span>
+          <span class="tab-label">Dashboard & Alerts</span>
+          <span class="tab-badge alert-count" id="navAlertBadge">0</span>
+        </button>
+        <button class="nav-tab" data-tab="invoices" id="tabBtnInvoices">
+          <span class="tab-icon">🧾</span>
+          <span class="tab-label">Invoice Scanner (Gemma)</span>
+        </button>
+        <button class="nav-tab" data-tab="recipes" id="tabBtnRecipes">
+          <span class="tab-icon">🍳</span>
+          <span class="tab-label">Recipe Studio & COGS</span>
+        </button>
+        <button class="nav-tab" data-tab="inventory" id="tabBtnInventory">
+          <span class="tab-icon">📈</span>
+          <span class="tab-label">Inflation Radar</span>
+        </button>
+        <button class="nav-tab" data-tab="audit" id="tabBtnAudit">
+          <span class="tab-icon">📑</span>
+          <span class="tab-label">1-Page Profit Audit</span>
+        </button>
+        <button class="nav-tab" data-tab="traction" id="tabBtnTraction">
+          <span class="tab-icon">👥</span>
+          <span class="tab-label">First User Traction</span>
+          <span class="tab-badge bonus-tag">Hackathon Bonus</span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Application Body -->
+  <main class="app-main" id="mainContent">
+
+    <!-- ====================================================================
+         TAB 1: MARGIN DASHBOARD
+         ==================================================================== -->
+    <section class="tab-pane active" id="paneDashboard">
+      <!-- Critical Inflation Banner -->
+      <div class="alert-banner" id="globalAlertBanner">
+        <div class="alert-banner-icon">⚠️</div>
+        <div class="alert-banner-content">
+          <h3 class="alert-banner-title" id="alertBannerTitle">Wholesale Price Surge Detected</h3>
+          <p class="alert-banner-desc" id="alertBannerDesc">
+            Recent wholesale increases in Butter (+27.9%) and Eggs (+29.0%) pushed <strong>Raspberry Tartlet</strong> to 44.7% food cost (target: 28.0%).
+            Estimated margin leakage: <strong>$14,280/year</strong>.
+          </p>
+        </div>
+        <button class="btn btn-warning btn-sm" id="btnBannerQuickOptimize">
+          Fix with Gemma AI →
+        </button>
+      </div>
+
+      <!-- Top KPI Row -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-title">Average Food Cost %</span>
+            <span class="kpi-icon-wrap bg-emerald">🎯</span>
+          </div>
+          <div class="kpi-body">
+            <div class="kpi-value-wrap">
+              <span class="kpi-value" id="kpiAvgFoodCost">0.0%</span>
+              <span class="kpi-delta" id="kpiFoodCostDelta">+0.0%</span>
+            </div>
+            <div class="kpi-progress-bar">
+              <div class="kpi-progress-fill" id="kpiFoodCostFill" style="width: 50%;"></div>
+            </div>
+            <div class="kpi-footer-sub">
+              <span>Kitchen Target: <strong id="kpiTargetCost">28.0%</strong></span>
+              <span class="target-marker">Benchmark: 25-30%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-title">Monthly Margin Leakage</span>
+            <span class="kpi-icon-wrap bg-rose">💸</span>
+          </div>
+          <div class="kpi-body">
+            <div class="kpi-value-wrap">
+              <span class="kpi-value text-rose" id="kpiMonthlyLeakage">$0</span>
+              <span class="kpi-badge badge-danger" id="kpiAnnualLeakage">-$0 / yr</span>
+            </div>
+            <p class="kpi-caption">Unrecovered wholesale price spikes across active menu items</p>
+            <div class="kpi-footer-sub">
+              <span>Potential Recovery: <strong class="text-emerald" id="kpiRecoveryPct">100%</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-title">Dishes At Risk</span>
+            <span class="kpi-icon-wrap bg-amber">⚡</span>
+          </div>
+          <div class="kpi-body">
+            <div class="kpi-value-wrap">
+              <span class="kpi-value text-amber" id="kpiAtRiskCount">0</span>
+              <span class="kpi-badge badge-warning" id="kpiAtRiskLabel">Needs Review</span>
+            </div>
+            <p class="kpi-caption" id="kpiAtRiskSubtext">Dishes exceeding the target food cost ceiling</p>
+            <div class="kpi-footer-sub">
+              <span id="kpiHealthyCount">0 Healthy dishes</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-title">Wholesale Inflation Index</span>
+            <span class="kpi-icon-wrap bg-blue">📈</span>
+          </div>
+          <div class="kpi-body">
+            <div class="kpi-value-wrap">
+              <span class="kpi-value" id="kpiAvgInflation">+0.0%</span>
+              <span class="kpi-badge badge-neutral" id="kpiSurgingCount">0 Ingredients</span>
+            </div>
+            <p class="kpi-caption">Weighted wholesale price shift across pantry inventory</p>
+            <div class="kpi-footer-sub">
+              <span>Based on latest supplier invoices</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dashboard Split Section -->
+      <div class="dashboard-split-grid">
+        <!-- Left: Menu Margin Health Matrix -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Menu Dishes Margin Matrix</h2>
+              <p class="card-subtitle">Real-time Cost of Goods Sold (COGS) vs Current Selling Price</p>
+            </div>
+            <button class="btn btn-outline btn-sm" id="btnDashboardNewRecipe">
+              + Add Dish
+            </button>
+          </div>
+          <div class="card-body">
+            <div class="dishes-list" id="dashboardDishesList">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Inflation Radar & Quick Actions -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Top Wholesale Inflation Spikes</h2>
+              <p class="card-subtitle">Ingredients with recent supplier price jumps</p>
+            </div>
+            <button class="btn btn-outline btn-sm" id="btnGoToInvoices">
+              Upload New Invoice
+            </button>
+          </div>
+          <div class="card-body">
+            <div class="inflation-spikes-list" id="dashboardInflationList">
+              <!-- Rendered via JS -->
+            </div>
+
+            <div class="mini-callout-box mt-4">
+              <div class="callout-icon">💡</div>
+              <div class="callout-text">
+                <strong>Why Open Gemma Matters for Kitchens:</strong>
+                <p>Commercial kitchens and bakeries cannot pay enterprise $150/mo SaaS fees. Running Gemma locally or with zero-margin open weights enables continuous invoice parsing and margin protection with 100% data confidentiality.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         TAB 2: INVOICE SCANNER (POWERED BY GEMMA)
+         ==================================================================== -->
+    <section class="tab-pane" id="paneInvoices">
+      <div class="section-intro">
+        <div>
+          <h2 class="section-title">Wholesale Supplier Invoice Extraction</h2>
+          <p class="section-subtitle">
+            Upload paper receipts, wholesale distributor delivery PDFs, or paste raw text. Google Gemma converts commercial case quantities into precise culinary prep units (per oz, per egg, per fl oz).
+          </p>
+        </div>
+        <div class="partner-meta-pill">
+          <span class="pill-dot"></span> Powered by <strong>Gemma 2 9B</strong> (Google Open-Weight)
+        </div>
+      </div>
+
+      <div class="invoice-workbench-grid">
+        <!-- Left: Input Controls -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">1. Supply Invoice Input</h3>
+            <span class="badge badge-neutral">Drag & Drop or Presets</span>
+          </div>
+          <div class="card-body">
+            <!-- Sample Invoices Quick Load Buttons -->
+            <div class="sample-pills-row">
+              <span class="row-label">Try realistic supplier invoices:</span>
+              <button class="pill-btn active" id="btnSampleSysco">Sysco Foodservice (#SYS-8492)</button>
+              <button class="pill-btn" id="btnSampleDepot">Restaurant Depot (#RD-5519)</button>
+              <button class="pill-btn" id="btnSampleClover">Local Clover Dairy (#CLV-290)</button>
+            </div>
+
+            <!-- Drag & Drop Zone -->
+            <div class="dropzone" id="invoiceDropzone">
+              <div class="dropzone-icon">📄</div>
+              <p class="dropzone-text"><strong>Drag & Drop invoice photo or PDF</strong> here, or <span class="browse-link">browse files</span></p>
+              <span class="dropzone-sub">Supports PNG, JPG, PDF, TXT (Simulated OCR + Parsing)</span>
+              <input type="file" id="invoiceFileInput" class="file-input-hidden" accept=".png,.jpg,.jpeg,.pdf,.txt">
+            </div>
+
+            <!-- Raw Text Area -->
+            <div class="form-group mt-3">
+              <label for="invoiceRawText" class="form-label">Or edit raw invoice line items:</label>
+              <textarea id="invoiceRawText" class="form-textarea code-font" rows="8" placeholder="Paste invoice text here..."></textarea>
+            </div>
+
+            <div class="form-check mt-2">
+              <input type="checkbox" id="chkAutoApplyInventory" class="form-checkbox" checked>
+              <label for="chkAutoApplyInventory" class="form-check-label">
+                <strong>Automatically update Wholesale Pantry</strong> with newly extracted unit prices
+              </label>
+            </div>
+
+            <button class="btn btn-primary btn-block btn-lg mt-4" id="btnParseInvoice">
+              <span class="btn-icon">⚡</span> Extract with Google Gemma 2
+            </button>
+          </div>
+        </div>
+
+        <!-- Right: Gemma Extraction Output -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">2. Gemma Extraction & Unit Conversion</h3>
+              <p class="card-subtitle">Culinary unit standardization & price deltas</p>
+            </div>
+            <div class="gemma-runtime-pill" id="gemmaRuntimeInfo">
+              <span>Model: Gemma-2-9B-IT</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <!-- Loading State -->
+            <div class="ai-processing-state hidden" id="invoiceLoadingState">
+              <div class="spinner-pulse"></div>
+              <h4 class="loading-heading">Gemma 2 Analyzing Invoice...</h4>
+              <p class="loading-sub">Standardizing pack cases (lbs/quarts) into culinary unit economics</p>
+              <div class="reasoning-stream-box">
+                <code>[Gemma-2] Parsing vendor header... Decomposing commercial case lot units... Matching pantry SKU identifiers... Computing inflation delta...</code>
+              </div>
+            </div>
+
+            <!-- Results Output -->
+            <div class="invoice-results-wrap" id="invoiceResultsWrap">
+              <div class="results-header-meta">
+                <div class="meta-item">
+                  <span class="meta-label">Vendor</span>
+                  <span class="meta-value" id="resVendor">Sysco Food Services</span>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-label">Invoice #</span>
+                  <span class="meta-value" id="resInvoiceNum">SYS-849201-NW</span>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-label">Invoice Date</span>
+                  <span class="meta-value" id="resDate">2026-10-12</span>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-label">Total Amount</span>
+                  <span class="meta-value text-emerald" id="resTotal">$476.40</span>
+                </div>
+              </div>
+
+              <!-- Extracted Items Table -->
+              <div class="table-responsive mt-3">
+                <table class="table-custom">
+                  <thead>
+                    <tr>
+                      <th>Raw Item</th>
+                      <th>Standardized Ingredient</th>
+                      <th>Pack Size & Cost</th>
+                      <th>Standard Unit Cost</th>
+                      <th>Price Delta</th>
+                    </tr>
+                  </thead>
+                  <tbody id="invoiceItemsTableBody">
+                    <!-- Populated via JS -->
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="gemma-reasoning-card mt-3">
+                <div class="reasoning-header">
+                  <span class="badge badge-gemma">Gemma 2 Culinary Reasoning</span>
+                  <span class="token-count" id="gemmaTokensCount">Prompt: 412 tokens • Generated: 285 tokens</span>
+                </div>
+                <p class="reasoning-body" id="invoiceReasoningText">
+                  Gemma 2 detected critical wholesale commodity price shocks: European Butter jumped +27.9% and Pasture Eggs surged +29.0%. Converted 36 lb case (576 oz) into $0.275/oz standard baking cost.
+                </p>
+              </div>
+
+              <div class="action-footer mt-4">
+                <button class="btn btn-success btn-md" id="btnApplyInventoryManual">
+                  ✓ Update Pantry & Recalculate Menu
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         TAB 3: RECIPE STUDIO & COGS CALCULATOR
+         ==================================================================== -->
+    <section class="tab-pane" id="paneRecipes">
+      <div class="section-intro">
+        <div>
+          <h2 class="section-title">Recipe Studio & Live Plate Costing</h2>
+          <p class="section-subtitle">
+            Every gram, ounce, and egg mapped to your wholesale pantry. Watch plate costs and margins update in real-time as ingredient prices fluctuate.
+          </p>
+        </div>
+        <button class="btn btn-primary btn-md" id="btnOpenNewRecipeModal">
+          + Create New Dish
+        </button>
+      </div>
+
+      <div class="recipe-studio-layout">
+        <!-- Left: Dish Selector / List -->
+        <div class="recipe-sidebar-list">
+          <div class="sidebar-header">
+            <h3>Menu Dishes (<span id="recipesCount">0</span>)</h3>
+          </div>
+          <div class="recipe-cards-column" id="recipeSelectorList">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <!-- Center: Active Recipe Detail & Cost Breakdown -->
+        <div class="recipe-main-workspace card">
+          <div class="card-header recipe-detail-header">
+            <div>
+              <div class="recipe-title-row">
+                <h2 class="recipe-detail-name" id="detailRecipeName">Select a Dish</h2>
+                <span class="badge badge-pill" id="detailMarginBadge">Calculating...</span>
+              </div>
+              <p class="recipe-detail-meta" id="detailRecipeMeta">Yield: 12 portions • Viennoiserie</p>
+            </div>
+            <div class="recipe-actions">
+              <button class="btn btn-ai-sparkle btn-md" id="btnOptimizeWithGemma">
+                <span class="sparkle-icon">✦</span> Optimize with Gemma AI
+              </button>
+              <button class="btn btn-outline btn-sm" id="btnEditRecipe">Edit</button>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <!-- Cost Visual Summary Row -->
+            <div class="cost-summary-bar-grid">
+              <div class="summary-metric-box">
+                <span class="box-label">Current Selling Price</span>
+                <span class="box-val text-primary" id="detailSellingPrice">$0.00</span>
+                <span class="box-sub">Menu retail price</span>
+              </div>
+              <div class="summary-metric-box">
+                <span class="box-label">Total Plate Cost (COGS)</span>
+                <span class="box-val text-rose" id="detailPlateCost">$0.00</span>
+                <span class="box-sub">Ingredients + Packaging</span>
+              </div>
+              <div class="summary-metric-box">
+                <span class="box-label">Actual Food Cost %</span>
+                <span class="box-val" id="detailFoodCostPct">0.0%</span>
+                <span class="box-sub">Target: <strong id="detailTargetCostPct">28.0%</strong></span>
+              </div>
+              <div class="summary-metric-box">
+                <span class="box-label">Gross Margin per Sale</span>
+                <span class="box-val text-emerald" id="detailGrossMargin">$0.00</span>
+                <span class="box-sub" id="detailGrossMarginPct">0.0% margin</span>
+              </div>
+              <div class="summary-metric-box">
+                <span class="box-label">Monthly Volume</span>
+                <span class="box-val" id="detailMonthlyVol">0 units</span>
+                <span class="box-sub" id="detailMonthlyRev">$0 / mo</span>
+              </div>
+            </div>
+
+            <!-- Ingredients Breakdown Table -->
+            <div class="mt-4">
+              <h3 class="subsection-title">Recipe Ingredients Formulation</h3>
+              <div class="table-responsive">
+                <table class="table-custom">
+                  <thead>
+                    <tr>
+                      <th>Ingredient</th>
+                      <th>Batch Quantity</th>
+                      <th>Wholesale Unit Cost</th>
+                      <th>Total Batch Cost</th>
+                      <th>Cost per Portion</th>
+                      <th>Inflation Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="detailIngredientsTableBody">
+                    <!-- Populated via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Additional Costs (Labor & Packaging) -->
+            <div class="additional-costs-grid mt-4">
+              <div class="cost-pill-item">
+                <span class="cost-pill-label">Direct Labor per Unit:</span>
+                <span class="cost-pill-val" id="detailLaborCost">$0.00</span>
+              </div>
+              <div class="cost-pill-item">
+                <span class="cost-pill-label">Eco Packaging per Unit:</span>
+                <span class="cost-pill-val" id="detailPackagingCost">$0.00</span>
+              </div>
+              <div class="cost-pill-item">
+                <span class="cost-pill-label">Monthly Net Profit:</span>
+                <span class="cost-pill-val text-emerald font-bold" id="detailMonthlyProfit">$0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         TAB 4: INGREDIENT INFLATION RADAR
+         ==================================================================== -->
+    <section class="tab-pane" id="paneInventory">
+      <div class="section-intro">
+        <div>
+          <h2 class="section-title">Wholesale Pantry & Inflation Radar</h2>
+          <p class="section-subtitle">
+            Track commercial wholesale purchase costs across vendors (Sysco, Restaurant Depot, local dairies). Never get blindsided by silent commodity price inflation.
+          </p>
+        </div>
+        <button class="btn btn-primary btn-md" id="btnOpenNewItemModal">
+          + Add Inventory Item
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="filter-search-group">
+            <input type="text" id="inventorySearchInput" class="form-input search-input" placeholder="Search ingredients, suppliers, categories...">
+            <div class="filter-buttons">
+              <button class="filter-btn active" data-cat="all">All</button>
+              <button class="filter-btn" data-cat="Dairy">Dairy</button>
+              <button class="filter-btn" data-cat="Dry Goods">Dry Goods</button>
+              <button class="filter-btn" data-cat="Produce">Produce</button>
+              <button class="filter-btn" data-cat="Meat">Meat</button>
+            </div>
+          </div>
+          <span class="badge badge-neutral" id="inventoryCountBadge">12 Items</span>
+        </div>
+
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table-custom">
+              <thead>
+                <tr>
+                  <th>Ingredient & Category</th>
+                  <th>Primary Supplier</th>
+                  <th>Wholesale Packaging</th>
+                  <th>Standard Unit Cost</th>
+                  <th>Previous Cost</th>
+                  <th>30-Day Change</th>
+                  <th>Last Invoice</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="inventoryTableBody">
+                <!-- Populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         TAB 5: 1-PAGE PROFIT AUDIT (PRINTABLE PITCH SHEET)
+         ==================================================================== -->
+    <section class="tab-pane" id="paneAudit">
+      <div class="audit-toolbar no-print">
+        <div class="toolbar-info">
+          <h2 class="section-title">Executive 1-Page Menu Profit Audit</h2>
+          <p class="section-subtitle">
+            A professional, client-ready financial audit report to take into a meeting with a restaurant or bakery owner to land your first paying customer!
+          </p>
+        </div>
+        <div class="toolbar-actions">
+          <button class="btn btn-secondary btn-md" id="btnRefreshAudit">
+            🔄 Refresh Audit
+          </button>
+          <button class="btn btn-primary btn-md" id="btnPrintAudit">
+            🖨️ Print / Save PDF
+          </button>
+        </div>
+      </div>
+
+      <!-- Printable Audit Sheet Document -->
+      <div class="audit-document-sheet" id="auditDocumentSheet">
+        <header class="audit-doc-header">
+          <div class="audit-doc-brand">
+            <h2 class="doc-title">MENU MARGIN & INFLATION AUDIT</h2>
+            <span class="doc-subtitle">Confidential Culinary Financial Health Review</span>
+          </div>
+          <div class="audit-doc-client-meta">
+            <div class="client-name" id="auditKitchenName">Honey & Dough Artisan Bakery</div>
+            <div class="client-sub" id="auditKitchenLocation">Portland, OR • Prepared for Chef Camille Laurent</div>
+            <div class="client-date" id="auditDate">October 14, 2026</div>
+          </div>
+        </header>
+
+        <!-- Executive Summary Boxes -->
+        <div class="audit-summary-boxes">
+          <div class="audit-box">
+            <span class="box-title">CURRENT MONTHLY REVENUE</span>
+            <span class="box-number" id="auditMonthlyRev">$18,450</span>
+          </div>
+          <div class="audit-box border-rose">
+            <span class="box-title">ESTIMATED ANNUAL MARGIN LEAKAGE</span>
+            <span class="box-number text-rose" id="auditAnnualLeakage">$14,280</span>
+          </div>
+          <div class="audit-box border-emerald">
+            <span class="box-title">RECOVERABLE PROFIT WITH GEMMA AI</span>
+            <span class="box-number text-emerald" id="auditRecoverableProfit">+$1,190 / mo</span>
+          </div>
+        </div>
+
+        <!-- Margin Audit Findings Table -->
+        <section class="audit-section mt-4">
+          <h3 class="audit-section-heading">1. Detailed Menu Costing & Risk Matrix</h3>
+          <table class="table-audit">
+            <thead>
+              <tr>
+                <th>Menu Item</th>
+                <th>Category</th>
+                <th>Selling Price</th>
+                <th>Plate Cost (COGS)</th>
+                <th>Food Cost %</th>
+                <th>Target %</th>
+                <th>Monthly Sales</th>
+                <th>Monthly Leakage</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="auditTableBody">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+        </section>
+
+        <!-- Gemma Strategic Recommendations -->
+        <section class="audit-section mt-4">
+          <h3 class="audit-section-heading">2. Gemma AI Executive Recommendations</h3>
+          <div class="audit-recommendations-grid">
+            <div class="rec-card">
+              <h4>🎯 Psychological Price Re-Anchoring</h4>
+              <p>Adjust <em>Fresh Raspberry Tartlet</em> from $6.95 to $7.75. Due to artisanal positioning, price sensitivity is low; immediately recovers $336/mo in gross margin.</p>
+            </div>
+            <div class="rec-card">
+              <h4>⚖️ Gram-Scale Portion Calibration</h4>
+              <p>Reduce croissant butter lamination block from 14.0 oz to 12.8 oz while introducing an additional simple letter fold to retain identical airy crumb structure. Eliminates $171/mo in butter overrun.</p>
+            </div>
+            <div class="rec-card">
+              <h4>🤝 Supplier Case-Volume Negotiation</h4>
+              <p>Order European butter in 72 lb pallet lots instead of 36 lb cases to negotiate an 8% volume rebate ($0.253/oz vs $0.275/oz).</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Footer Sign-off -->
+        <footer class="audit-doc-footer">
+          <div>
+            <span>Audit Engine: <strong>Google Gemma 2 Open-Weight Architecture</strong></span>
+            <p>100% On-Premise Data Privacy • Zero External Cloud Vendor Data Leakage</p>
+          </div>
+          <div class="signature-line">
+            <span>Prepared by MenuMargin Consultant</span>
+          </div>
+        </footer>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         TAB 6: FIRST USER TRACTION & MONETIZATION LOG (HACKATHON BONUS)
+         ==================================================================== -->
+    <section class="tab-pane" id="paneTraction">
+      <div class="section-intro">
+        <div>
+          <h2 class="section-title">First User Traction & Monetization</h2>
+          <p class="section-subtitle">
+            Directly addressing the Hacktoberfest prompt: <em>"Did they pay? Would they? What did they ask for next?"</em> Record authentic owner feedback and track commercial viability.
+          </p>
+        </div>
+        <button class="btn btn-primary btn-md" id="btnLogNewInterview">
+          + Record New Owner Interview
+        </button>
+      </div>
+
+      <!-- Commercial Pricing Tiers Display -->
+      <div class="commercial-tiers-grid mb-4">
+        <div class="tier-card">
+          <span class="tier-badge">Solo Starter</span>
+          <h3 class="tier-name">Food Truck & Home Baker</h3>
+          <div class="tier-price"><span class="price-currency">$</span>19<span class="price-period">/mo</span></div>
+          <p class="tier-desc">For single-location food trucks and micro-bakeries.</p>
+          <ul class="tier-features">
+            <li>✓ Unlimited Invoice Photo Scans (Gemma)</li>
+            <li>✓ Up to 15 Menu Dish Recipes</li>
+            <li>✓ Live Wholesale Inflation Radar</li>
+            <li>✓ Local/Offline Data Sovereignty</li>
+          </ul>
+        </div>
+
+        <div class="tier-card featured">
+          <span class="tier-badge popular">Most Popular</span>
+          <h3 class="tier-name">Artisan Kitchen & Cafe</h3>
+          <div class="tier-price"><span class="price-currency">$</span>39<span class="price-period">/mo</span></div>
+          <p class="tier-desc">For full-service cafes, bakeries, and busy restaurants.</p>
+          <ul class="tier-features">
+            <li>✓ Everything in Solo Starter</li>
+            <li>✓ Unlimited Recipes & Portions</li>
+            <li>✓ Gemma 2 Deep Recipe Optimizer</li>
+            <li>✓ Automated Supplier Invoicing Parsing</li>
+            <li>✓ 1-Page Executive PDF Audits</li>
+          </ul>
+        </div>
+
+        <div class="tier-card">
+          <span class="tier-badge">Consultant</span>
+          <h3 class="tier-name">Hospitality Consultant</h3>
+          <div class="tier-price"><span class="price-currency">$</span>99<span class="price-period">/mo</span></div>
+          <p class="tier-desc">For freelance kitchen consultants auditing multiple clients.</p>
+          <ul class="tier-features">
+            <li>✓ Multi-Restaurant Client Profiles</li>
+            <li>✓ White-Label Printable Pitch Audits</li>
+            <li>✓ Historical Trend Data & Backboard Memory</li>
+            <li>✓ Priority Gemma Inference Engine</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Logged Interviews Feed -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Real-World Owner Interviews & Feedback Log</h3>
+            <p class="card-subtitle">Documenting user validation and feature requests for Hacktoberfest judges</p>
+          </div>
+          <span class="badge badge-success" id="interviewsCountBadge">1 Interview Logged</span>
+        </div>
+        <div class="card-body">
+          <div class="feedback-feed" id="feedbackFeed">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ======================================================================
+       MODAL 1: GEMMA RECIPE OPTIMIZER MODAL
+       ====================================================================== -->
+  <div class="modal-backdrop hidden" id="modalOptimizer">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span class="modal-icon-badge">✦</span>
+          <div>
+            <h3 class="modal-title">Gemma 2 Culinary Margin Optimization</h3>
+            <p class="modal-subtitle" id="optRecipeSub">Dish: Fresh Raspberry Tartlet • Food Cost: 44.7%</p>
+          </div>
+        </div>
+        <button class="modal-close" id="btnCloseOptimizer">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="ai-processing-state hidden" id="optLoadingState">
+          <div class="spinner-pulse"></div>
+          <h4>Gemma 2 Calculating Recipe Optimization...</h4>
+          <p>Analyzing flavor chemistry, portion sizing, and psychological price elasticity...</p>
+        </div>
+
+        <div class="optimizer-content" id="optimizerContent">
+          <!-- KPI Recovery Banner -->
+          <div class="recovery-hero-box">
+            <div class="recovery-stat">
+              <span class="rec-label">Current Food Cost</span>
+              <span class="rec-val text-rose" id="optCurrentCost">44.7%</span>
+            </div>
+            <div class="recovery-arrow">➔</div>
+            <div class="recovery-stat">
+              <span class="rec-label">Optimized Target</span>
+              <span class="rec-val text-emerald" id="optTargetCost">28.0%</span>
+            </div>
+            <div class="recovery-divider"></div>
+            <div class="recovery-stat">
+              <span class="rec-label">Recoverable Annual Profit</span>
+              <span class="rec-val text-emerald font-bold" id="optAnnualGain">+$4,032 / yr</span>
+            </div>
+          </div>
+
+          <!-- Gemma Actions List -->
+          <h4 class="opt-section-title mt-4">Recommended Culinary Action Steps</h4>
+          <div class="actions-stack" id="optActionsStack">
+            <!-- Dynamically populated -->
+          </div>
+
+          <!-- Gemma Reasoning Inspector -->
+          <div class="gemma-debug-box mt-4">
+            <div class="debug-header">
+              <span>Model: <strong id="optModelName">gemma-2-9b-it</strong></span>
+              <span id="optTokensStat">Prompt: 538 tokens • Generated: 382 tokens</span>
+            </div>
+            <p class="debug-text" id="optReasoningText">
+              Gemma 2 evaluated the cost composition of Raspberry Tartlet. Raspberries ($0.667/oz) and European Butter ($0.275/oz) drive 78% of the recipe cost. Recommended balancing a $0.80 retail adjustment with subtle glaze-to-fresh berry ratio refinement.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btnCancelOptimizer">Close</button>
+        <button class="btn btn-primary" id="btnApplyOptimization">
+          Apply Suggested Price to Menu
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 2: ADD/EDIT RECIPE MODAL
+       ====================================================================== -->
+  <div class="modal-backdrop hidden" id="modalRecipeForm">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <h3 class="modal-title" id="recipeModalTitle">Create Menu Dish</h3>
+        <button class="modal-close" id="btnCloseRecipeModal">&times;</button>
+      </div>
+      <form id="recipeForm" class="modal-form">
+        <div class="modal-body">
+          <input type="hidden" id="editRecipeId">
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="formRecipeName" class="form-label">Dish Name *</label>
+              <input type="text" id="formRecipeName" class="form-input" required placeholder="e.g. Sourdough Brioche French Toast">
+            </div>
+            <div class="form-group">
+              <label for="formRecipeCategory" class="form-label">Category</label>
+              <input type="text" id="formRecipeCategory" class="form-input" placeholder="e.g. Viennoiserie, Burgers, Brunch">
+            </div>
+          </div>
+
+          <div class="form-row-3">
+            <div class="form-group">
+              <label for="formPortionYield" class="form-label">Batch Portion Yield *</label>
+              <input type="number" id="formPortionYield" class="form-input" min="1" value="1" required>
+            </div>
+            <div class="form-group">
+              <label for="formUnitName" class="form-label">Portion Unit *</label>
+              <input type="text" id="formUnitName" class="form-input" value="portions" placeholder="portions, burgers, drinks">
+            </div>
+            <div class="form-group">
+              <label for="formSellingPrice" class="form-label">Menu Selling Price ($) *</label>
+              <input type="number" id="formSellingPrice" class="form-input" step="0.05" min="0.10" value="7.50" required>
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="formMonthlyVolume" class="form-label">Estimated Monthly Sales Units</label>
+              <input type="number" id="formMonthlyVolume" class="form-input" value="450">
+            </div>
+            <div class="form-group">
+              <label for="formPackagingCost" class="form-label">Packaging Cost per Unit ($)</label>
+              <input type="number" id="formPackagingCost" class="form-input" step="0.05" value="0.25">
+            </div>
+          </div>
+
+          <!-- Recipe Ingredients Builder -->
+          <div class="ingredients-builder-wrap mt-3">
+            <div class="builder-header">
+              <label class="form-label">Recipe Ingredients</label>
+              <button type="button" class="btn btn-outline btn-xs" id="btnAddIngredientRow">+ Add Ingredient</button>
+            </div>
+            <div class="ingredients-rows-container" id="recipeIngredientsRows">
+              <!-- Dynamically populated ingredient rows -->
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btnCancelRecipeModal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btnSaveRecipe">Save Recipe</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 3: ADD INVENTORY ITEM MODAL
+       ====================================================================== -->
+  <div class="modal-backdrop hidden" id="modalInventoryForm">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Add Wholesale Inventory Item</h3>
+        <button class="modal-close" id="btnCloseInventoryModal">&times;</button>
+      </div>
+      <form id="inventoryForm" class="modal-form">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="formInvName" class="form-label">Ingredient Name *</label>
+            <input type="text" id="formInvName" class="form-input" required placeholder="e.g. Unsalted Butter 82%">
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="formInvCategory" class="form-label">Category</label>
+              <select id="formInvCategory" class="form-select">
+                <option value="Dairy">Dairy</option>
+                <option value="Dry Goods">Dry Goods</option>
+                <option value="Produce">Produce</option>
+                <option value="Meat">Meat</option>
+                <option value="Bakery">Bakery</option>
+                <option value="Beverage">Beverage</option>
+                <option value="Condiments">Condiments</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="formInvSupplier" class="form-label">Supplier / Vendor</label>
+              <input type="text" id="formInvSupplier" class="form-input" placeholder="e.g. Sysco, Restaurant Depot">
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="formInvPkgQty" class="form-label">Wholesale Pack Size</label>
+              <input type="text" id="formInvPkgQty" class="form-input" placeholder="e.g. 50 lb bag, 12 quarts">
+            </div>
+            <div class="form-group">
+              <label for="formInvPkgCost" class="form-label">Wholesale Pack Cost ($) *</label>
+              <input type="number" id="formInvPkgCost" class="form-input" step="0.01" required placeholder="e.g. 48.00">
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="formInvUnit" class="form-label">Standard Prep Unit *</label>
+              <select id="formInvUnit" class="form-select">
+                <option value="oz">oz (ounces)</option>
+                <option value="fl oz">fl oz (fluid ounces)</option>
+                <option value="egg">egg (pieces)</option>
+                <option value="lb">lb (pounds)</option>
+                <option value="g">g (grams)</option>
+                <option value="bun">bun (count)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="formInvUnitCost" class="form-label">Calculated Unit Cost ($) *</label>
+              <input type="number" id="formInvUnitCost" class="form-input" step="0.001" required placeholder="e.g. 0.275">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btnCancelInventoryModal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Add Item to Pantry</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 4: RECORD OWNER INTERVIEW MODAL (HACKATHON BONUS)
+       ====================================================================== -->
+  <div class="modal-backdrop hidden" id="modalFeedbackForm">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Record First User Interview</h3>
+        <button class="modal-close" id="btnCloseFeedbackModal">&times;</button>
+      </div>
+      <form id="feedbackForm" class="modal-form">
+        <div class="modal-body">
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="formTesterName" class="form-label">Owner / Chef Name *</label>
+              <input type="text" id="formTesterName" class="form-input" required placeholder="e.g. Chef Marco">
+            </div>
+            <div class="form-group">
+              <label for="formBusinessName" class="form-label">Kitchen / Business Name *</label>
+              <input type="text" id="formBusinessName" class="form-input" required placeholder="e.g. Rustica Pizzeria">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="formRole" class="form-label">Role</label>
+            <input type="text" id="formRole" class="form-input" placeholder="Owner, Head Chef, General Manager">
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label">Did they pay during the pilot?</label>
+              <select id="formDidTheyPay" class="form-select">
+                <option value="false">No (Free trial / demo)</option>
+                <option value="true">Yes ($ Paid upfront)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Would they pay?</label>
+              <select id="formWouldTheyPay" class="form-select">
+                <option value="true">Yes, absolutely</option>
+                <option value="false">No / Undecided</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="formWillingnessToPay" class="form-label">Quoted Willingness to Pay ($ / month)</label>
+            <input type="text" id="formWillingnessToPay" class="form-input" placeholder="e.g. $29 - $40 / month">
+          </div>
+
+          <div class="form-group">
+            <label for="formFeedbackSummary" class="form-label">What surprised them or solved their problem?</label>
+            <textarea id="formFeedbackSummary" class="form-textarea" rows="3" required placeholder="e.g. Shocked that their signature dish food cost was over 40%..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="formRequestedFeatures" class="form-label">What did they ask for next?</label>
+            <textarea id="formRequestedFeatures" class="form-textarea" rows="2" placeholder="e.g. Direct email invoice forwarding, POS integration..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btnCancelFeedbackModal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save User Feedback</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 5: ARCHITECTURE & OPEN INNOVATION DETAILS
+       ====================================================================== -->
+  <div class="modal-backdrop hidden" id="modalPartnerInfo">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span class="modal-icon-badge">⚡</span>
+          <div>
+            <h3 class="modal-title">Architecture & Why Open Innovation Matters</h3>
+            <p class="modal-subtitle">Hacktoberfest "Side Hustle" & "Best Use of Gemma" Submission Spec</p>
+          </div>
+        </div>
+        <button class="modal-close" id="btnClosePartnerInfo">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="arch-showcase-grid">
+          <div class="arch-card">
+            <div class="arch-card-header">
+              <span class="arch-logo">✦</span>
+              <h4>Google Gemma (Core AI)</h4>
+            </div>
+            <p><strong>Open-Weight Model Family:</strong> Uses Gemma 2 (9B / 2B) for high-precision culinary entity extraction, non-linear unit conversions, and culinary margin engineering. Can run locally on a POS terminal or via private cloud.</p>
+          </div>
+
+          <div class="arch-card">
+            <div class="arch-card-header">
+              <span class="arch-logo">☁️</span>
+              <h4>Render (Cloud Hosting)</h4>
+            </div>
+            <p><strong>Zero-Friction Deployment:</strong> Pre-configured <code>render.yaml</code> blueprint. Hosts the full-stack web service with automatic SSL, background worker capabilities, and zero DevOps overhead.</p>
+          </div>
+
+          <div class="arch-card">
+            <div class="arch-card-header">
+              <span class="arch-logo">🧠</span>
+              <h4>Backboard.io (Agent Memory)</h4>
+            </div>
+            <p><strong>Longitudinal Price Tracking:</strong> Maintains persistent supplier price histories across months, allowing Gemma to detect multi-quarter margin decay trends per SKU.</p>
+          </div>
+
+          <div class="arch-card">
+            <div class="arch-card-header">
+              <span class="arch-logo">📹</span>
+              <h4>DevRelay (Agent Recording)</h4>
+            </div>
+            <p><strong>Verified Agent Session:</strong> Full development workflow recorded to embed directly in the Hacktoberfest DEV post so judges see the entire build process.</p>
+          </div>
+        </div>
+
+        <div class="open-why-box mt-4">
+          <h4>Why Open Innovation Matters for Real-World Food Businesses:</h4>
+          <ul>
+            <li><strong>Data Sovereignty & Contract Privacy:</strong> Wholesale distributor invoices contain proprietary discounts and negotiated tier pricing. Food business owners cannot risk uploading confidential supplier invoices to closed third-party cloud models.</li>
+            <li><strong>Zero Marginal Token Costs:</strong> A food truck operating on thin 4% margins cannot pay $0.05 per API call. Running Gemma 2 locally or on an open-weight runtime keeps recurring costs at $0.</li>
+            <li><strong>Offline Kitchen Resiliency:</strong> Food truck generators and basement prep kitchens frequently lose internet connectivity. Gemma can execute fully offline on the chef's laptop.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btnOkPartnerInfo">Got it</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast Container -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- Frontend Logic -->
+  <script src="app.js"></script>
+</body>
+</html>

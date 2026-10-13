@@ -1,0 +1,346 @@
+{
+  "activeProfileId": "bakery",
+  "profiles": {
+    "bakery": {
+      "id": "bakery",
+      "name": "Honey & Dough Artisan Bakery",
+      "type": "Bakery & Patisserie",
+      "owner": "Chef Camille Laurent",
+      "location": "Portland, OR",
+      "currency": "$",
+      "targetFoodCostPct": 28,
+      "monthlyRevenueGoal": 18500
+    },
+    "foodtruck": {
+      "id": "foodtruck",
+      "name": "Smash & Co. Gourmet Food Truck",
+      "type": "Mobile Food Truck",
+      "owner": "Marcus Vance",
+      "location": "Austin, TX",
+      "currency": "$",
+      "targetFoodCostPct": 32,
+      "monthlyRevenueGoal": 24000
+    },
+    "cafe": {
+      "id": "cafe",
+      "name": "Velvet Roast Specialty Cafe",
+      "type": "Specialty Coffee & Brunch",
+      "owner": "Elena Chen",
+      "location": "Seattle, WA",
+      "currency": "$",
+      "targetFoodCostPct": 25,
+      "monthlyRevenueGoal": 16000
+    }
+  },
+  "inventory": [
+    {
+      "id": "inv-1",
+      "name": "European Unsalted Butter 82%",
+      "category": "Dairy",
+      "supplier": "Sysco Foodservice",
+      "packageQuantity": 36,
+      "packageUnit": "lb case",
+      "packageCost": 158.40,
+      "unitCost": 0.275,
+      "unit": "oz",
+      "lastUpdated": "2026-10-10",
+      "previousUnitCost": 0.215,
+      "priceChangePct": 27.9,
+      "trend": "up"
+    },
+    {
+      "id": "inv-2",
+      "name": "Organic Pasture-Raised Eggs",
+      "category": "Dairy",
+      "supplier": "Clover Valley Farm",
+      "packageQuantity": 15,
+      "packageUnit": "dozen case (180 eggs)",
+      "packageCost": 72.00,
+      "unitCost": 0.400,
+      "unit": "egg",
+      "lastUpdated": "2026-10-12",
+      "previousUnitCost": 0.310,
+      "priceChangePct": 29.0,
+      "trend": "up"
+    },
+    {
+      "id": "inv-3",
+      "name": "Unbleached Bread Flour (King Arthur)",
+      "category": "Dry Goods",
+      "supplier": "Restaurant Depot",
+      "packageQuantity": 50,
+      "packageUnit": "lb bag",
+      "packageCost": 28.50,
+      "unitCost": 0.036,
+      "unit": "oz",
+      "lastUpdated": "2026-10-05",
+      "previousUnitCost": 0.035,
+      "priceChangePct": 2.8,
+      "trend": "stable"
+    },
+    {
+      "id": "inv-4",
+      "name": "Heavy Whipping Cream 36%",
+      "category": "Dairy",
+      "supplier": "Sysco Foodservice",
+      "packageQuantity": 12,
+      "packageUnit": "quarts case",
+      "packageCost": 54.00,
+      "unitCost": 0.141,
+      "unit": "fl oz",
+      "lastUpdated": "2026-10-09",
+      "previousUnitCost": 0.125,
+      "priceChangePct": 12.8,
+      "trend": "up"
+    },
+    {
+      "id": "inv-5",
+      "name": "Madagascar Bourbon Vanilla Paste",
+      "category": "Baking Essentials",
+      "supplier": "Chef Rubber",
+      "packageQuantity": 32,
+      "packageUnit": "oz tub",
+      "packageCost": 89.00,
+      "unitCost": 2.781,
+      "unit": "oz",
+      "lastUpdated": "2026-09-28",
+      "previousUnitCost": 2.781,
+      "priceChangePct": 0.0,
+      "trend": "stable"
+    },
+    {
+      "id": "inv-6",
+      "name": "Fresh Organic Raspberries",
+      "category": "Produce",
+      "supplier": "Pacific Fresh Greens",
+      "packageQuantity": 12,
+      "packageUnit": "6-oz clamshells",
+      "packageCost": 48.00,
+      "unitCost": 0.667,
+      "unit": "oz",
+      "lastUpdated": "2026-10-11",
+      "previousUnitCost": 0.520,
+      "priceChangePct": 28.3,
+      "trend": "up"
+    },
+    {
+      "id": "inv-7",
+      "name": "Fine Granulated Cane Sugar",
+      "category": "Dry Goods",
+      "supplier": "Costco Business Center",
+      "packageQuantity": 50,
+      "packageUnit": "lb bag",
+      "packageCost": 34.00,
+      "unitCost": 0.0425,
+      "unit": "oz",
+      "lastUpdated": "2026-10-02",
+      "previousUnitCost": 0.0410,
+      "priceChangePct": 3.7,
+      "trend": "stable"
+    },
+    {
+      "id": "inv-8",
+      "name": "Prime Ground Chuck 80/20",
+      "category": "Meat",
+      "supplier": "Lone Star Meats",
+      "packageQuantity": 40,
+      "packageUnit": "lb case",
+      "packageCost": 172.00,
+      "unitCost": 0.269,
+      "unit": "oz",
+      "lastUpdated": "2026-10-12",
+      "previousUnitCost": 0.235,
+      "priceChangePct": 14.5,
+      "trend": "up"
+    },
+    {
+      "id": "inv-9",
+      "name": "Brioche Potato Burger Buns",
+      "category": "Bakery",
+      "supplier": "Artisan Breads Co",
+      "packageQuantity": 48,
+      "packageUnit": "buns pack",
+      "packageCost": 33.60,
+      "unitCost": 0.700,
+      "unit": "bun",
+      "lastUpdated": "2026-10-08",
+      "previousUnitCost": 0.680,
+      "priceChangePct": 2.9,
+      "trend": "stable"
+    },
+    {
+      "id": "inv-10",
+      "name": "Truffle Infused Aioli Base",
+      "category": "Condiments",
+      "supplier": "Specialty Sauces Inc",
+      "packageQuantity": 64,
+      "packageUnit": "fl oz jug",
+      "packageCost": 42.00,
+      "unitCost": 0.656,
+      "unit": "fl oz",
+      "lastUpdated": "2026-10-04",
+      "previousUnitCost": 0.656,
+      "priceChangePct": 0.0,
+      "trend": "stable"
+    },
+    {
+      "id": "inv-11",
+      "name": "Ceremonial Grade Uji Matcha",
+      "category": "Beverage",
+      "supplier": "Kyoto Imports",
+      "packageQuantity": 16,
+      "packageUnit": "oz pouch",
+      "packageCost": 76.00,
+      "unitCost": 4.750,
+      "unit": "oz",
+      "lastUpdated": "2026-09-30",
+      "previousUnitCost": 4.500,
+      "priceChangePct": 5.6,
+      "trend": "stable"
+    },
+    {
+      "id": "inv-12",
+      "name": "Barista Edition Oat Milk (Oatly)",
+      "category": "Dairy Alt",
+      "supplier": "Sysco Foodservice",
+      "packageQuantity": 12,
+      "packageUnit": "32 fl oz cartons",
+      "packageCost": 46.80,
+      "unitCost": 0.122,
+      "unit": "fl oz",
+      "lastUpdated": "2026-10-07",
+      "previousUnitCost": 0.118,
+      "priceChangePct": 3.4,
+      "trend": "stable"
+    }
+  ],
+  "recipes": [
+    {
+      "id": "rec-1",
+      "profileId": "bakery",
+      "name": "Croissant au Beurre (Batch of 12)",
+      "category": "Viennoiserie",
+      "portionYield": 12,
+      "unitName": "croissants",
+      "sellingPrice": 4.75,
+      "monthlyVolume": 950,
+      "ingredients": [
+        { "inventoryId": "inv-1", "name": "European Butter 82%", "quantity": 14, "unit": "oz" },
+        { "inventoryId": "inv-3", "name": "Bread Flour", "quantity": 18, "unit": "oz" },
+        { "inventoryId": "inv-2", "name": "Organic Eggs (wash)", "quantity": 1, "unit": "egg" },
+        { "inventoryId": "inv-7", "name": "Granulated Cane Sugar", "quantity": 2.5, "unit": "oz" }
+      ],
+      "laborCostPerUnit": 0.45,
+      "packagingCostPerUnit": 0.18,
+      "lastAuditDate": "2026-10-12"
+    },
+    {
+      "id": "rec-2",
+      "profileId": "bakery",
+      "name": "Fresh Raspberry Tartlet",
+      "category": "Patisserie",
+      "portionYield": 6,
+      "unitName": "tartlets",
+      "sellingPrice": 6.95,
+      "monthlyVolume": 420,
+      "ingredients": [
+        { "inventoryId": "inv-6", "name": "Fresh Organic Raspberries", "quantity": 18, "unit": "oz" },
+        { "inventoryId": "inv-1", "name": "European Butter 82%", "quantity": 6, "unit": "oz" },
+        { "inventoryId": "inv-4", "name": "Heavy Whipping Cream", "quantity": 8, "unit": "fl oz" },
+        { "inventoryId": "inv-2", "name": "Organic Eggs", "quantity": 3, "unit": "egg" },
+        { "inventoryId": "inv-5", "name": "Vanilla Paste", "quantity": 0.5, "unit": "oz" }
+      ],
+      "laborCostPerUnit": 0.85,
+      "packagingCostPerUnit": 0.35,
+      "lastAuditDate": "2026-10-12"
+    },
+    {
+      "id": "rec-3",
+      "profileId": "bakery",
+      "name": "Vanilla Bean Kouign-Amann",
+      "category": "Viennoiserie",
+      "portionYield": 8,
+      "unitName": "pastries",
+      "sellingPrice": 5.25,
+      "monthlyVolume": 580,
+      "ingredients": [
+        { "inventoryId": "inv-1", "name": "European Butter 82%", "quantity": 12, "unit": "oz" },
+        { "inventoryId": "inv-3", "name": "Bread Flour", "quantity": 14, "unit": "oz" },
+        { "inventoryId": "inv-7", "name": "Granulated Cane Sugar", "quantity": 8, "unit": "oz" },
+        { "inventoryId": "inv-5", "name": "Vanilla Paste", "quantity": 0.35, "unit": "oz" }
+      ],
+      "laborCostPerUnit": 0.50,
+      "packagingCostPerUnit": 0.20,
+      "lastAuditDate": "2026-10-10"
+    },
+    {
+      "id": "rec-4",
+      "profileId": "foodtruck",
+      "name": "Double Smash Truffle Burger",
+      "category": "Burgers",
+      "portionYield": 1,
+      "unitName": "burger",
+      "sellingPrice": 13.50,
+      "monthlyVolume": 1100,
+      "ingredients": [
+        { "inventoryId": "inv-8", "name": "Prime Ground Chuck 80/20", "quantity": 7, "unit": "oz" },
+        { "inventoryId": "inv-9", "name": "Brioche Potato Burger Bun", "quantity": 1, "unit": "bun" },
+        { "inventoryId": "inv-10", "name": "Truffle Infused Aioli", "quantity": 1.5, "unit": "fl oz" },
+        { "inventoryId": "inv-1", "name": "European Butter (sear)", "quantity": 0.5, "unit": "oz" }
+      ],
+      "laborCostPerUnit": 1.20,
+      "packagingCostPerUnit": 0.45,
+      "lastAuditDate": "2026-10-12"
+    },
+    {
+      "id": "rec-5",
+      "profileId": "cafe",
+      "name": "Iced Ceremonial Matcha Oat Latte",
+      "category": "Specialty Drinks",
+      "portionYield": 1,
+      "unitName": "drink (16 oz)",
+      "sellingPrice": 6.50,
+      "monthlyVolume": 850,
+      "ingredients": [
+        { "inventoryId": "inv-11", "name": "Ceremonial Uji Matcha", "quantity": 0.15, "unit": "oz" },
+        { "inventoryId": "inv-12", "name": "Barista Oat Milk", "quantity": 10, "unit": "fl oz" },
+        { "inventoryId": "inv-5", "name": "Vanilla Paste", "quantity": 0.1, "unit": "oz" }
+      ],
+      "laborCostPerUnit": 0.35,
+      "packagingCostPerUnit": 0.30,
+      "lastAuditDate": "2026-10-11"
+    }
+  ],
+  "sampleInvoices": [
+    {
+      "id": "invc-sysco-1",
+      "vendor": "Sysco Foodservice Distribution",
+      "invoiceNumber": "SYS-849201-NW",
+      "date": "2026-10-12",
+      "totalAmount": 476.40,
+      "rawText": "SYSCO FOOD SERVICES - NORTHWEST\nINVOICE: #SYS-849201-NW   DATE: 10/12/2026\nCUSTOMER: HONEY & DOUGH BAKERY #4992\n------------------------------------------------------------\nITEM                DESC                    QTY   UNIT    PRICE   EXT-PRICE\n3829101   BUTTR-UNSLT-EURO-82%-36#CS         1     CS   $158.40    $158.40  [+27.9% NOTICE: BUTTER MARKET SHORTAGE]\n4829102   HVY-WHIP-CRM-36%-12/1QT           1     CS    $54.00     $54.00  [+12.8% FLUID DAIRY SURCHARGE]\n1029482   EGGS-PAST-LG-15DZ-180CT           1     CS    $72.00     $72.00  [+29.0% AVIAN FLU PROTOCOL INDEX]\n9281723   ORG-RASPBERRY-12/6OZ-CLAM         2     CS    $96.00    $192.00  [BERRY HARVEST TRANSITION]\n------------------------------------------------------------\nSUBTOTAL: $476.40   TAX: $0.00   TOTAL DUE: $476.40"
+    },
+    {
+      "id": "invc-depot-2",
+      "vendor": "Restaurant Depot Wholesalers",
+      "invoiceNumber": "RD-55193",
+      "date": "2026-10-09",
+      "totalAmount": 147.00,
+      "rawText": "RESTAURANT DEPOT CASH & CARRY\nRECEIPT #RD-55193   DATE: 10/09/2026\n------------------------------------------------------------\nKA-BREAD-FLR-50LB      2 @ $28.50     $57.00\nCANE-SUGAR-FINE-50LB   2 @ $34.00     $68.00\nYST-INST-RED-1LB       4 @  $5.50     $22.00\n------------------------------------------------------------\nTOTAL: $147.00   PAYMENT: VISA ENDING 4910"
+    }
+  ],
+  "userFeedbackLog": [
+    {
+      "id": "fb-1",
+      "timestamp": "2026-10-12T16:45:00Z",
+      "testerName": "Chef Camille Laurent",
+      "business": "Honey & Dough Bakery",
+      "role": "Owner & Head Baker",
+      "didTheyPay": false,
+      "wouldTheyPay": true,
+      "quotedWillingnessToPay": "$25 - $35 / month",
+      "feedbackSummary": "Camille was stunned to see her Raspberry Tartlet food cost was 44.7% due to the recent raspberry and butter price hikes. She thought it was around 28%. She immediately raised the price to $7.75 and substituted 15% of butter with cultured cream based on the Gemma suggestion.",
+      "requestedFeatures": "Requested automated supplier invoice forwarding via email so she doesn't have to manually upload weekly receipts, and a 1-page export for her morning kitchen prep staff."
+    }
+  ]
+}
