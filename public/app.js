@@ -845,7 +845,7 @@ function renderRecipeStudio() {
         </div>
         ${r.metrics.monthlyMarginLeakage > 0 ? `
           <div style="font-size:0.72rem; color:var(--rose-500); font-weight:700; margin-top:0.2rem;">
-            -$${r.metrics.monthlyMarginLeakage}/mo leakage
+            -${formatCurrency(r.metrics.monthlyMarginLeakage)}/mo leakage
           </div>
         ` : ''}
       </div>
