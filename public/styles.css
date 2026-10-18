@@ -790,6 +790,18 @@ code, kbd, samp, pre {
 /* --------------------------------------------------------------------------
    4. NAVIGATION TABS BAR
    -------------------------------------------------------------------------- */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .nav-tabs-bar {
   background: var(--surface-1);
   border-bottom: 1px solid var(--border-subtle);

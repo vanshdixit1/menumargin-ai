@@ -95,6 +95,7 @@ const DOM = {
   kpiFoodCostDelta: document.getElementById('kpiFoodCostDelta'),
   kpiFoodCostFill: document.getElementById('kpiFoodCostFill'),
   kpiFoodCostGauge: document.getElementById('kpiFoodCostGauge'),
+  dashboardUpdateStatus: document.getElementById('dashboardUpdateStatus'),
   kpiTargetCost: document.getElementById('kpiTargetCost'),
   kpiMonthlyLeakage: document.getElementById('kpiMonthlyLeakage'),
   kpiAnnualLeakage: document.getElementById('kpiAnnualLeakage'),
@@ -660,6 +661,10 @@ function renderDashboard() {
   const profile = state.activeProfile;
   const critical = summary.criticalDishes;
   const warning = summary.warningDishes;
+  const dashboardAnnouncement = `Dashboard updated. Average food cost ${formatPercent(summary.avgFoodCostPct)}, monthly margin leakage ${formatCurrency(summary.totalMonthlyLeakage)}, ${critical + warning} dishes at risk.`;
+  if (DOM.dashboardUpdateStatus && DOM.dashboardUpdateStatus.textContent !== dashboardAnnouncement) {
+    DOM.dashboardUpdateStatus.textContent = dashboardAnnouncement;
+  }
 
   // Count-up KPI values once for the initial dashboard load.
   if (!state.hasAnimatedDashboard) {
