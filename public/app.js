@@ -2027,13 +2027,16 @@ function showToast(message, type = 'info') {
   toast.innerHTML = `
     <span class="toast-icon">${icon}</span>
     <span class="toast-message">${message}</span>
+    <span class="toast-progress" aria-hidden="true"></span>
   `;
   DOM.toastContainer.appendChild(toast);
-  // Smooth slide-out
+  // Keep the progress hairline in sync with the auto-dismiss timer.
+  const lifetime = 3200;
+  toast.style.setProperty('--toast-life', `${lifetime}ms`);
   setTimeout(() => {
     toast.classList.add('hiding');
     setTimeout(() => toast.remove(), 220);
-  }, 3200);
+  }, lifetime);
 }
 
 function capitalize(s) {

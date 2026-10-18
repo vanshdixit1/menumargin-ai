@@ -613,6 +613,11 @@ code, kbd, samp, pre {
   transform: translateY(-1px);
 }
 
+.status-indicator-pill.status-confirmed {
+  border-color: var(--emerald-border);
+  box-shadow: 0 0 0 4px var(--emerald-subtle);
+}
+
 .kpi-card:first-child {
   border-color: var(--brand-primary);
   box-shadow: 0 0 0 1px var(--brand-primary-subtle), var(--shadow-md);
@@ -2824,6 +2829,25 @@ code, kbd, samp, pre {
   animation: toastSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
   transition: opacity 0.2s ease, transform 0.2s ease;
   max-width: 380px;
+  position: relative;
+  overflow: hidden;
+}
+
+.toast-progress {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  transform-origin: left;
+  background: currentColor;
+  opacity: 0.45;
+  animation: toastProgress var(--toast-life, 3200ms) linear forwards;
+}
+
+@keyframes toastProgress {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
 }
 
 @keyframes toastSlide {

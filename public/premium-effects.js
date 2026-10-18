@@ -225,6 +225,16 @@
     });
   }
 
+  function addStatusFeedback() {
+    var status = document.getElementById('systemStatusPill');
+    if (!status || reducedMotion) return;
+    status.addEventListener('click', function () {
+      status.classList.remove('status-confirmed');
+      window.requestAnimationFrame(function () { status.classList.add('status-confirmed'); });
+      window.setTimeout(function () { status.classList.remove('status-confirmed'); }, 700);
+    });
+  }
+
   ready(function () {
     runPreloader();
     document.documentElement.classList.add('premium-motion-ready');
@@ -237,6 +247,7 @@
     addTabTransitions();
     addActiveTabIndicator();
     addPressFeedback();
+    addStatusFeedback();
     window.setTimeout(function () { document.documentElement.classList.add('app-ready'); }, reducedMotion ? 0 : 80);
   });
 })();
