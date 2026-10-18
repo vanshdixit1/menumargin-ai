@@ -1171,12 +1171,16 @@ function setupEventListeners() {
       if (pane) pane.classList.add('active');
     });
     tab.addEventListener('keydown', (event) => {
-      if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+      if (!['ArrowRight', 'ArrowLeft', 'Home', 'End'].includes(event.key)) return;
       event.preventDefault();
       const index = Array.from(DOM.navTabs).indexOf(tab);
-      const nextIndex = event.key === 'ArrowRight'
-        ? (index + 1) % DOM.navTabs.length
-        : (index - 1 + DOM.navTabs.length) % DOM.navTabs.length;
+      const nextIndex = event.key === 'Home'
+        ? 0
+        : event.key === 'End'
+          ? DOM.navTabs.length - 1
+          : event.key === 'ArrowRight'
+            ? (index + 1) % DOM.navTabs.length
+            : (index - 1 + DOM.navTabs.length) % DOM.navTabs.length;
       DOM.navTabs[nextIndex].focus();
       DOM.navTabs[nextIndex].click();
     });
@@ -1417,6 +1421,7 @@ function setupCommandPalette() {
 
 function openCommandPalette() {
   if (!DOM.commandPalette) return;
+  DOM.commandPalette.dataset.returnFocusId = document.activeElement?.id || '';
   DOM.commandPalette.classList.remove('hidden');
   DOM.commandPaletteInput.value = '';
   renderCommandResults();
@@ -1424,7 +1429,10 @@ function openCommandPalette() {
 }
 
 function closeCommandPalette() {
-  DOM.commandPalette?.classList.add('hidden');
+  if (!DOM.commandPalette) return;
+  const returnFocusId = DOM.commandPalette.dataset.returnFocusId;
+  DOM.commandPalette.classList.add('hidden');
+  if (returnFocusId) document.getElementById(returnFocusId)?.focus();
 }
 
 function showWorkspaceWelcomeIfNeeded() {

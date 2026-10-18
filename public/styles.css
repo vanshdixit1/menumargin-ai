@@ -886,6 +886,17 @@ code, kbd, samp, pre {
   position: relative;
 }
 
+.nav-container::after {
+  content: '';
+  position: sticky;
+  right: 0;
+  flex: 0 0 1.25rem;
+  align-self: stretch;
+  margin-left: -1.25rem;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, var(--surface-1));
+}
+
 .nav-container::-webkit-scrollbar {
   display: none;
 }
@@ -3349,6 +3360,21 @@ code, kbd, samp, pre {
 
   .brand-tagline {
     max-width: 24ch;
+  }
+
+  .nav-container {
+    gap: 0.2rem;
+    padding-inline: 0.65rem;
+    scroll-padding-inline: 0.65rem;
+  }
+
+  .nav-tab {
+    min-height: 46px;
+    padding: 0.7rem 0.8rem;
+  }
+
+  .nav-tab:focus-visible {
+    outline-offset: -3px;
   }
 
   #modalOptimizer .modal-card {
