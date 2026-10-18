@@ -64,6 +64,15 @@ app.post('/api/profile/select', (req, res) => {
   }
 });
 
+app.post('/api/profile', (req, res) => {
+  try {
+    const profile = dataStore.createProfile(req.body);
+    res.status(201).json({ success: true, profile });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
 app.put('/api/profile', (req, res) => {
   try {
     const active = dataStore.getActiveProfile();
@@ -113,73 +122,69 @@ app.post('/api/inventory', (req, res) => {
   }
 });
 
-// 4. Recipes with Real-Time COGS & Margin Metrics
+// 3b. Inventory Item Time-Series History & Dependency Query
+app.get('/api/inventory/:id/history', (req, res) => {
+  try {
+    const item = dataStore.getInventoryItem(req.params.id);
+    if (!item) {
+      return res.status(404).json({ error: `Inventory item ${req.params.id} not found` });
+    }
+    const dependentRecipeIds = dataStore.getDependentRecipes(req.params.id);
+    const allRecipes = dataStore.getAllRecipes();
+    const dependentRecipes = allRecipes.filter(r => dependentRecipeIds.includes(r.id));
+
+    res.json({
+      item,
+      priceHistory: item.priceHistory || [],
+      dependentRecipes: dependentRecipes.map(r => ({ id: r.id, name: r.name, category: r.category }))
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// 3c. Dependency Graph Query
+app.get('/api/dependencies', (req, res) => {
+  try {
+    const inventory = dataStore.getInventory();
+    const graph = {};
+    inventory.forEach(item => {
+      graph[item.id] = {
+        name: item.name,
+        dependentRecipeIds: dataStore.getDependentRecipes(item.id)
+      };
+    });
+    res.json({ graph });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// 3d. Dimensional Unit Conversion Endpoint
+app.get('/api/convert-unit', (req, res) => {
+  try {
+    const { qty, from, to, density } = req.query;
+    const converted = dataStore.unitConverter.convert(Number(qty) || 1, from, to, density);
+    res.json({
+      quantity: Number(qty) || 1,
+      fromUnit: from,
+      toUnit: to,
+      convertedQuantity: Number(converted.toFixed(4))
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// 4. Recipes with Real-Time COGS & Margin Metrics (OOP Abstraction)
 app.get('/api/recipes', (req, res) => {
   try {
     const profile = dataStore.getActiveProfile();
     const inventory = dataStore.getInventory();
-    const rawRecipes = dataStore.getRecipes();
+    const recipeEntities = dataStore.getRecipeEntities();
 
-    // Calculate real-time metrics for every recipe
-    const calculated = rawRecipes.map(recipe => {
-      let ingredientsCost = 0;
-      const ingDetails = recipe.ingredients.map(ing => {
-        const inv = inventory.find(i => i.id === ing.inventoryId);
-        const unitCost = inv ? inv.unitCost : 0;
-        const lineCost = unitCost * ing.quantity;
-        ingredientsCost += lineCost;
-        return {
-          ...ing,
-          unitCost,
-          lineCost: Number(lineCost.toFixed(3)),
-          trend: inv?.trend || 'stable',
-          priceChangePct: inv?.priceChangePct || 0
-        };
-      });
-
-      const portionYield = recipe.portionYield || 1;
-      const ingredientPerPortion = ingredientsCost / portionYield;
-      const packagingPerUnit = recipe.packagingCostPerUnit || 0;
-      const laborPerUnit = recipe.laborCostPerUnit || 0;
-      const plateCost = ingredientPerPortion + packagingPerUnit;
-      const sellingPrice = recipe.sellingPrice || 1;
-      const foodCostPct = Number(((plateCost / sellingPrice) * 100).toFixed(1));
-      const grossMarginPct = Number((100 - foodCostPct).toFixed(1));
-      const targetPct = profile.targetFoodCostPct || 30;
-
-      // Status classification
-      let marginStatus = 'HEALTHY';
-      if (foodCostPct > targetPct + 6) {
-        marginStatus = 'CRITICAL_LEAKAGE';
-      } else if (foodCostPct > targetPct) {
-        marginStatus = 'WARNING';
-      }
-
-      const monthlyVolume = recipe.monthlyVolume || 500;
-      const targetPlateCost = sellingPrice * (targetPct / 100);
-      const unitCostOverrun = Math.max(0, plateCost - targetPlateCost);
-      const monthlyMarginLeakage = Math.round(unitCostOverrun * monthlyVolume);
-      const monthlyRevenue = Math.round(sellingPrice * monthlyVolume);
-      const monthlyProfit = Math.round((sellingPrice - plateCost - laborPerUnit) * monthlyVolume);
-
-      return {
-        ...recipe,
-        ingredients: ingDetails,
-        metrics: {
-          totalIngredientsCost: Number(ingredientsCost.toFixed(2)),
-          ingredientPerPortion: Number(ingredientPerPortion.toFixed(2)),
-          plateCost: Number(plateCost.toFixed(2)),
-          foodCostPct,
-          grossMarginPct,
-          targetFoodCostPct: targetPct,
-          marginStatus,
-          monthlyVolume,
-          monthlyRevenue,
-          monthlyProfit,
-          monthlyMarginLeakage
-        }
-      };
-    });
+    // Delegate calculation to Recipe domain entities
+    const calculated = recipeEntities.map(r => r.toDetailedDTO(profile.targetFoodCostPct, inventory));
 
     // Summary calculations
     const totalMonthlyLeakage = calculated.reduce((acc, r) => acc + r.metrics.monthlyMarginLeakage, 0);
@@ -253,9 +258,13 @@ app.post('/api/invoice/parse', upload.single('invoiceFile'), async (req, res) =>
     const inventory = dataStore.getInventory();
     const gemmaResult = await gemmaService.parseInvoiceWithGemma(invoiceText, inventory);
 
-    // If applyToInventory is requested, update the pantry automatically
+    // If applyToInventory is requested, update the pantry automatically with time-series history
     if (req.body.applyToInventory === true || req.body.applyToInventory === 'true') {
       const extracted = gemmaResult.data?.extractedItems || [];
+      const invoiceMeta = {
+        invoiceId: gemmaResult.data?.invoiceNumber || 'INV-SCAN',
+        note: `Verified Delivery from ${gemmaResult.data?.vendor || 'Supplier'}`
+      };
       for (const item of extracted) {
         if (item.matchedInventoryId) {
           const inv = inventory.find(i => i.id === item.matchedInventoryId);
@@ -266,7 +275,7 @@ app.post('/api/invoice/parse', upload.single('invoiceFile'), async (req, res) =>
             inv.priceChangePct = item.priceChangePct;
             inv.trend = item.priceChangePct > 2 ? 'up' : (item.priceChangePct < -2 ? 'down' : 'stable');
             inv.lastUpdated = new Date().toISOString().split('T')[0];
-            dataStore.updateInventoryItem(inv);
+            dataStore.updateInventoryItem(inv, invoiceMeta);
           }
         }
       }
@@ -303,64 +312,40 @@ app.post('/api/recipes/:id/optimize', async (req, res) => {
   }
 });
 
-// 7. Full Printable Audit Report
+// 7. Full Printable Audit Report (Delegates to MarginAudit Aggregate)
 app.get('/api/audit-report', (req, res) => {
   try {
-    const profile = dataStore.getActiveProfile();
-    const inventory = dataStore.getInventory();
-    const recipes = dataStore.getRecipes();
-
-    let totalMonthlyRevenue = 0;
-    let totalMonthlyProfit = 0;
-    let totalMonthlyLeakage = 0;
-    const auditedDishes = [];
-
-    recipes.forEach(recipe => {
-      let ingCost = 0;
-      recipe.ingredients.forEach(ing => {
-        const inv = inventory.find(i => i.id === ing.inventoryId);
-        ingCost += (inv ? inv.unitCost : 0) * ing.quantity;
-      });
-      const portionYield = recipe.portionYield || 1;
-      const plateCost = (ingCost / portionYield) + (recipe.packagingCostPerUnit || 0);
-      const foodCostPct = Number(((plateCost / recipe.sellingPrice) * 100).toFixed(1));
-      const targetPct = profile.targetFoodCostPct;
-      const targetPlateCost = recipe.sellingPrice * (targetPct / 100);
-      const unitOverrun = Math.max(0, plateCost - targetPlateCost);
-      const leakage = Math.round(unitOverrun * (recipe.monthlyVolume || 500));
-      const revenue = Math.round(recipe.sellingPrice * (recipe.monthlyVolume || 500));
-      const profit = Math.round((recipe.sellingPrice - plateCost - (recipe.laborCostPerUnit || 0)) * (recipe.monthlyVolume || 500));
-
-      totalMonthlyRevenue += revenue;
-      totalMonthlyProfit += profit;
-      totalMonthlyLeakage += leakage;
-
-      auditedDishes.push({
-        name: recipe.name,
-        category: recipe.category,
-        sellingPrice: recipe.sellingPrice,
-        plateCost: Number(plateCost.toFixed(2)),
-        foodCostPct,
-        targetFoodCostPct: targetPct,
-        monthlyVolume: recipe.monthlyVolume,
-        monthlyRevenue: revenue,
-        monthlyProfit: profit,
-        monthlyLeakage: leakage,
-        urgency: foodCostPct > targetPct + 6 ? 'CRITICAL' : (foodCostPct > targetPct ? 'WARNING' : 'HEALTHY')
-      });
-    });
-
+    const audit = dataStore.createMarginAudit();
+    if (req.query.format === 'crisp' || req.query.crisp === 'true') {
+      return res.json(audit.toCrispExecutiveSummary());
+    }
+    const report = audit.toDetailedReport();
     res.json({
       generatedAt: new Date().toISOString(),
-      profile,
+      profile: report.profile,
       summary: {
-        totalMonthlyRevenue,
-        totalMonthlyProfit,
-        totalMonthlyLeakage,
-        annualizedLeakage: totalMonthlyLeakage * 12,
-        potentialAnnualProfitGain: totalMonthlyLeakage * 12
+        totalMonthlyRevenue: report.summary.totalMonthlyRevenue,
+        totalMonthlyProfit: report.summary.totalMonthlyProfit,
+        totalMonthlyLeakage: report.summary.totalMonthlyLeakage,
+        annualizedLeakage: report.summary.annualLeakage,
+        potentialAnnualProfitGain: report.summary.annualLeakage
       },
-      auditedDishes
+      auditedDishes: report.auditedDishes,
+      executiveSummary: audit.toCrispExecutiveSummary()
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// 7b. Crisp Executive Overview (Clean, High-Signal Intelligence)
+app.get('/api/crisp-overview', (req, res) => {
+  try {
+    const audit = dataStore.createMarginAudit();
+    res.json({
+      executiveAudit: audit.toCrispExecutiveSummary(),
+      crispInventory: dataStore.getCrispInventorySummary(),
+      crispRecipes: dataStore.getCrispRecipesSummary()
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
