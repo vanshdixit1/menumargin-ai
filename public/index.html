@@ -172,7 +172,7 @@
           </p>
         </div>
         <button class="btn btn-warning btn-sm" id="btnBannerQuickOptimize">
-          Fix with Gemma AI →
+          <span class="ai-cta-label">Fix with Gemma AI</span> →
         </button>
       </div>
 
@@ -358,6 +358,7 @@
 
             <!-- Drag & Drop Zone -->
             <div class="dropzone" id="invoiceDropzone">
+              <span class="invoice-scan-line" aria-hidden="true"></span>
               <div class="dropzone-icon" aria-hidden="true">
                 <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
               </div>
@@ -399,7 +400,7 @@
           </div>
           <div class="card-body">
             <!-- Loading State -->
-            <div class="ai-processing-state hidden" id="invoiceLoadingState">
+            <div class="ai-processing-state hidden" id="invoiceLoadingState" aria-live="polite">
               <div class="spinner-pulse"></div>
               <h4 class="loading-heading">Gemma 2 Analyzing Invoice...</h4>
               <p class="loading-sub">Standardizing pack cases (lbs/quarts) into culinary unit economics</p>
@@ -409,7 +410,7 @@
             </div>
 
             <!-- Results Output -->
-            <div class="invoice-results-wrap hidden" id="invoiceResultsWrap">
+            <div class="invoice-results-wrap hidden" id="invoiceResultsWrap" aria-live="polite">
               <div class="results-header-meta">
                 <div class="meta-item">
                   <span class="meta-label">Vendor</span>

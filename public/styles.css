@@ -1882,6 +1882,8 @@ code, kbd, samp, pre {
 }
 
 .dropzone {
+  position: relative;
+  overflow: hidden;
   border: 2px dashed var(--border-default);
   border-radius: var(--radius-lg);
   padding: 2rem 1.5rem;
@@ -1889,6 +1891,35 @@ code, kbd, samp, pre {
   background: var(--surface-2);
   cursor: pointer;
   transition: all var(--transition-fast);
+}
+
+.invoice-scan-line {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 8%;
+  width: 84%;
+  height: 2px;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(90deg, transparent, var(--brand-primary), var(--gemma-purple), transparent);
+  box-shadow: 0 0 14px var(--brand-primary);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dropzone.is-scanning {
+  border-color: var(--brand-primary);
+  background: linear-gradient(180deg, var(--brand-primary-subtle), var(--surface-2));
+}
+
+.dropzone.is-scanning .invoice-scan-line {
+  opacity: 1;
+  animation: invoiceScanSweep 1.45s var(--ease-standard) infinite;
+}
+
+@keyframes invoiceScanSweep {
+  from { transform: translateY(1rem); }
+  to { transform: translateY(13rem); }
 }
 
 .dropzone:hover,
@@ -2003,6 +2034,51 @@ code, kbd, samp, pre {
   padding: 0.95rem 1.15rem;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-subtle);
+}
+
+.invoice-results-wrap {
+  animation: invoiceResultsReveal 420ms var(--ease-standard) both;
+}
+
+.invoice-results-wrap tbody tr {
+  animation: invoiceRowReveal 360ms var(--ease-standard) both;
+  animation-delay: calc(var(--invoice-row-index, 0) * 55ms);
+}
+
+@keyframes invoiceResultsReveal {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes invoiceRowReveal {
+  from { opacity: 0; transform: translateX(8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.ai-cta-label {
+  position: relative;
+  display: inline-block;
+}
+
+#btnBannerQuickOptimize {
+  position: relative;
+  overflow: hidden;
+}
+
+#btnBannerQuickOptimize::after {
+  position: absolute;
+  inset: 0 auto 0 -45%;
+  width: 32%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.32), transparent);
+  content: '';
+  transform: skewX(-18deg);
+  animation: aiCtaShimmer 3.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes aiCtaShimmer {
+  0%, 58% { left: -45%; }
+  78%, 100% { left: 125%; }
 }
 
 .meta-item {

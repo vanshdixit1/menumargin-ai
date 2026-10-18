@@ -1519,6 +1519,7 @@ async function parseInvoiceWithGemmaAction() {
 
   DOM.invoiceLoadingState.classList.remove('hidden');
   DOM.invoiceResultsWrap.classList.add('hidden');
+  DOM.invoiceDropzone.classList.add('is-scanning');
 
   try {
     const requestBody = state.selectedInvoiceFile
@@ -1559,7 +1560,7 @@ async function parseInvoiceWithGemmaAction() {
         const deltaClass = item.priceChangePct > 5 ? 'up' : (item.priceChangePct < -2 ? 'down' : 'stable');
         const sign = item.priceChangePct > 0 ? '+' : '';
         return `
-          <tr>
+          <tr style="--invoice-row-index: ${latestExtractedItems.indexOf(item)}">
             <td><code>${item.rawLine}</code></td>
             <td><strong>${item.name}</strong><br><span style="font-size:0.7rem; color:var(--text-subtle);">${item.unitConversionNote}</span></td>
             <td>${item.packageQuantity} ${item.packageUnit} (${formatCurrency(item.packageCost, 2)})</td>
@@ -1585,6 +1586,8 @@ async function parseInvoiceWithGemmaAction() {
     DOM.invoiceResultsWrap.classList.add('hidden');
     console.error('Invoice parsing failed:', err);
     showToast('Failed to parse invoice with Gemma', 'danger');
+  } finally {
+    DOM.invoiceDropzone.classList.remove('is-scanning');
   }
 }
 
