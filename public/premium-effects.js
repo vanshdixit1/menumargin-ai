@@ -211,6 +211,20 @@
     });
   }
 
+  function addPressFeedback() {
+    if (reducedMotion) return;
+    document.addEventListener('pointerdown', function (event) {
+      var target = event.target.closest('button, .recipe-select-card, .spike-item');
+      if (!target || target.disabled) return;
+      target.classList.add('motion-pressed');
+    });
+    document.addEventListener('pointerup', function () {
+      document.querySelectorAll('.motion-pressed').forEach(function (target) {
+        target.classList.remove('motion-pressed');
+      });
+    });
+  }
+
   ready(function () {
     runPreloader();
     document.documentElement.classList.add('premium-motion-ready');
@@ -222,6 +236,7 @@
     addHeroParallax();
     addTabTransitions();
     addActiveTabIndicator();
+    addPressFeedback();
     window.setTimeout(function () { document.documentElement.classList.add('app-ready'); }, reducedMotion ? 0 : 80);
   });
 })();

@@ -842,6 +842,10 @@ code, kbd, samp, pre {
   transition: width 360ms var(--ease-standard), transform 360ms var(--ease-standard);
 }
 
+.premium-motion-ready .nav-tab.active::after {
+  transform: scaleX(0);
+}
+
 .tab-icon-svg {
   width: 16px;
   height: 16px;
@@ -2459,6 +2463,19 @@ code, kbd, samp, pre {
   box-shadow: var(--shadow-modal);
   animation: modalSpring 0.38s cubic-bezier(0.34, 1.40, 0.64, 1) both;
   overflow: hidden;
+  position: relative;
+  isolation: isolate;
+}
+
+.modal-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(129, 140, 248, 0.13), transparent 34%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.03), transparent 40%);
 }
 
 .modal-sm {
@@ -2481,6 +2498,25 @@ code, kbd, samp, pre {
 @keyframes modalSpring {
   from { transform: translateY(18px) scale(0.94); opacity: 0; }
   to   { transform: translateY(0)     scale(1);    opacity: 1; }
+}
+
+.premium-motion-ready .modal-card .modal-header,
+.premium-motion-ready .modal-card .modal-body,
+.premium-motion-ready .modal-card .modal-footer {
+  animation: modalContentReveal 420ms var(--ease-standard) both;
+}
+
+.premium-motion-ready .modal-card .modal-body {
+  animation-delay: 60ms;
+}
+
+.premium-motion-ready .modal-card .modal-footer {
+  animation-delay: 110ms;
+}
+
+@keyframes modalContentReveal {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .modal-header {
@@ -3410,6 +3446,12 @@ code, kbd, samp, pre {
 .spike-item:hover::after,
 .recipe-select-card:hover::after {
   opacity: 1;
+}
+
+.motion-pressed {
+  filter: brightness(1.12);
+  transform: scale(0.985) !important;
+  transition-duration: var(--motion-instant) !important;
 }
 
 @keyframes signalFloat {
