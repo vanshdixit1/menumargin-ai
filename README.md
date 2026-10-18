@@ -7,6 +7,12 @@
 [![Model](https://img.shields.io/badge/Model-Gemma--2--9B--IT-8b5cf6?logo=google)](https://ai.google.dev/gemma)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
+## Live Demo
+
+Try the deployed app at **[menumargin-ai.onrender.com](https://menumargin-ai.onrender.com/?demo=1)**.
+
+The public demo uses the isolated seeded workspace. Create an account to set up a private business workspace with your own inventory, recipes, invoices, and margin targets.
+
 ---
 
 ## 💡 The Real-World Problem: Silent Margin Death in Small Kitchens
