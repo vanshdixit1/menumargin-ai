@@ -135,6 +135,27 @@
     });
   }
 
+  function addDynamicTilt() {
+    if (touch || reducedMotion) return;
+    document.addEventListener('pointermove', function (event) {
+      var target = event.target.closest('.kpi-card, .dish-row-card, .spike-item, .recipe-select-card');
+      if (!target || target.dataset.motionTilt === 'off') return;
+      var rect = target.getBoundingClientRect();
+      var x = (event.clientX - rect.left) / rect.width - 0.5;
+      var y = (event.clientY - rect.top) / rect.height - 0.5;
+      target.style.setProperty('--tilt-x', (y * -2.2).toFixed(2) + 'deg');
+      target.style.setProperty('--tilt-y', (x * 2.2).toFixed(2) + 'deg');
+      target.classList.add('is-tilting');
+    }, { passive: true });
+    document.addEventListener('pointerout', function (event) {
+      var target = event.target.closest('.kpi-card, .dish-row-card, .spike-item, .recipe-select-card');
+      if (!target || target.contains(event.relatedTarget)) return;
+      target.classList.remove('is-tilting');
+      target.style.removeProperty('--tilt-x');
+      target.style.removeProperty('--tilt-y');
+    });
+  }
+
   function addHeroParallax() {
     if (touch || reducedMotion) return;
     var header = document.querySelector('.app-header');
@@ -170,6 +191,7 @@
     addScrollProgress();
     addCursor();
     addMagneticButtons();
+    addDynamicTilt();
     addHeroParallax();
     addTabTransitions();
     window.setTimeout(function () { document.documentElement.classList.add('app-ready'); }, reducedMotion ? 0 : 80);
