@@ -200,6 +200,10 @@ body {
   padding: 0;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 .hidden {
   display: none !important;
 }
@@ -3127,7 +3131,227 @@ code, kbd, samp, pre {
 }
 
 /* --------------------------------------------------------------------------
-   21. PRINT MEDIA STYLES (1-Page Profit Audit)
+   21. PREMIUM MOTION LAYER
+   -------------------------------------------------------------------------- */
+.premium-preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(99, 102, 241, 0.15), transparent 32%),
+    var(--surface-0);
+  color: var(--text-primary);
+  transition: opacity 620ms var(--ease-exit), clip-path 700ms var(--ease-standard);
+}
+
+.premium-preloader.is-complete {
+  clip-path: inset(0 0 100% 0);
+  opacity: 0;
+}
+
+.premium-preloader.is-hidden {
+  display: none;
+}
+
+.preloader-grid {
+  position: absolute;
+  inset: -20%;
+  opacity: 0.22;
+  background-image:
+    linear-gradient(rgba(148, 163, 184, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.1) 1px, transparent 1px);
+  background-size: 56px 56px;
+  transform: perspective(500px) rotateX(62deg) translateY(12%);
+  mask-image: linear-gradient(to bottom, transparent, #000 30%, transparent 85%);
+}
+
+.preloader-content {
+  position: relative;
+  width: min(440px, calc(100% - 3rem));
+  text-align: center;
+  animation: preloaderContentIn 700ms var(--ease-standard) both;
+}
+
+.preloader-mark {
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 1.4rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(129, 140, 248, 0.7);
+  border-radius: 18px;
+  color: #c4b5fd;
+  font: 800 0.75rem/1 var(--font-mono);
+  letter-spacing: -0.08em;
+  box-shadow: 0 0 42px rgba(99, 102, 241, 0.32), inset 0 0 22px rgba(139, 92, 246, 0.12);
+}
+
+.preloader-mark span,
+.preloader-wordmark span {
+  color: #818cf8;
+}
+
+.preloader-wordmark {
+  font: 700 clamp(1.6rem, 5vw, 2.6rem)/1 var(--font-sans);
+  letter-spacing: 0.22em;
+  text-indent: 0.22em;
+  clip-path: inset(0 100% 0 0);
+  animation: preloaderMaskReveal 900ms 180ms var(--ease-standard) forwards;
+}
+
+.preloader-status {
+  margin-top: 0.9rem;
+  color: var(--text-secondary);
+  font: 500 0.62rem/1.4 var(--font-mono);
+  letter-spacing: 0.18em;
+}
+
+.preloader-progress {
+  height: 2px;
+  margin-top: 2.2rem;
+  overflow: hidden;
+  background: rgba(148, 163, 184, 0.16);
+}
+
+.preloader-progress-bar {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform: scaleX(0);
+  transform-origin: left;
+  background: linear-gradient(90deg, #6366f1, #c4b5fd);
+  box-shadow: 0 0 18px rgba(129, 140, 248, 0.9);
+}
+
+.preloader-counter {
+  margin-top: 0.7rem;
+  color: var(--text-secondary);
+  font: 600 0.75rem/1 var(--font-mono);
+  letter-spacing: 0.1em;
+}
+
+.scroll-progress {
+  position: fixed;
+  z-index: 9000;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  pointer-events: none;
+  transform: scaleX(0);
+  transform-origin: left;
+  background: linear-gradient(90deg, var(--brand-primary), #c4b5fd);
+  box-shadow: 0 0 14px var(--brand-glow);
+}
+
+.premium-motion-ready .motion-reveal {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+  transition: opacity 620ms var(--ease-standard) var(--motion-delay), transform 620ms var(--ease-standard) var(--motion-delay);
+}
+
+.premium-motion-ready .motion-reveal.motion-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.premium-tab-enter {
+  animation: premiumTabEnter 300ms var(--ease-standard) both;
+}
+
+.app-header {
+  transform: translate3d(var(--pointer-x, 0), var(--pointer-y, 0), 0);
+  transition: transform 900ms var(--ease-standard), box-shadow var(--motion-base) var(--ease-standard);
+}
+
+.app-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% -100%, rgba(129, 140, 248, 0.1), transparent 45%);
+}
+
+.btn-primary,
+.btn-ai-sparkle,
+.btn-scan,
+#btnScanInvoiceHeader {
+  will-change: transform;
+  transition: transform var(--motion-fast) var(--ease-standard), box-shadow var(--motion-fast) var(--ease-standard), filter var(--motion-fast) var(--ease-standard);
+}
+
+.btn-primary:hover,
+.btn-ai-sparkle:hover,
+.btn-scan:hover,
+#btnScanInvoiceHeader:hover {
+  filter: saturate(1.12);
+  box-shadow: 0 10px 28px rgba(99, 102, 241, 0.24);
+}
+
+.card,
+.recipe-select-card,
+.spike-item {
+  transition: transform var(--motion-base) var(--ease-standard), border-color var(--motion-base) var(--ease-standard), box-shadow var(--motion-base) var(--ease-standard);
+}
+
+.card:hover,
+.recipe-select-card:hover,
+.spike-item:hover {
+  transform: translateY(-2px);
+  border-color: rgba(129, 140, 248, 0.32);
+  box-shadow: 0 14px 34px rgba(2, 6, 23, 0.2);
+}
+
+.premium-cursor,
+.premium-cursor-follower {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 11000;
+  pointer-events: none;
+  border-radius: 50%;
+  transform: translate3d(-100px, -100px, 0);
+}
+
+.premium-cursor {
+  width: 7px;
+  height: 7px;
+  margin: -3.5px 0 0 -3.5px;
+  background: #c4b5fd;
+  box-shadow: 0 0 16px rgba(129, 140, 248, 0.9);
+}
+
+.premium-cursor-follower {
+  width: 32px;
+  height: 32px;
+  margin: -16px 0 0 -16px;
+  border: 1px solid rgba(165, 180, 252, 0.6);
+  transition: width 220ms var(--ease-standard), height 220ms var(--ease-standard), margin 220ms var(--ease-standard), background-color 220ms var(--ease-standard);
+}
+
+.premium-cursor-follower.is-hovering {
+  background: rgba(129, 140, 248, 0.12);
+}
+
+@keyframes preloaderContentIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes preloaderMaskReveal {
+  to { clip-path: inset(0 0 0 0); }
+}
+
+@keyframes premiumTabEnter {
+  from { opacity: 0.2; transform: translate3d(0, 8px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+/* --------------------------------------------------------------------------
+   22. PRINT MEDIA STYLES (1-Page Profit Audit)
    -------------------------------------------------------------------------- */
 @media print {
   .app-header,

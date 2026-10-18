@@ -25,8 +25,22 @@
   <link rel="stylesheet" href="styles.css">
   <script src="formatters.js"></script>
   <script src="motion-tokens.js"></script>
+  <script src="motion-config.js"></script>
+  <script src="premium-effects.js"></script>
 </head>
 <body class="theme-dark">
+  <div class="premium-preloader" id="premiumPreloader" aria-label="Loading MenuMargin AI" role="status">
+    <div class="preloader-grid" aria-hidden="true"></div>
+    <div class="preloader-content">
+      <div class="preloader-mark">MM<span>AI</span></div>
+      <div class="preloader-wordmark">MENU<span>MARGIN</span></div>
+      <div class="preloader-status">CALIBRATING MARGIN INTELLIGENCE</div>
+      <div class="preloader-progress">
+        <span class="preloader-progress-bar" id="preloaderProgressBar"></span>
+      </div>
+      <div class="preloader-counter"><span id="preloaderCounter">0</span><span>%</span></div>
+    </div>
+  </div>
   <!-- Top App Navigation Bar -->
   <header class="app-header">
     <div class="header-container">
