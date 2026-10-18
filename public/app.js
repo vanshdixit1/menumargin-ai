@@ -118,6 +118,7 @@ const DOM = {
   // Recipe Studio
   recipesCount: document.getElementById('recipesCount'),
   recipeSelectorList: document.getElementById('recipeSelectorList'),
+  recipeMainWorkspace: document.querySelector('.recipe-main-workspace'),
   detailRecipeName: document.getElementById('detailRecipeName'),
   detailMarginBadge: document.getElementById('detailMarginBadge'),
   detailRecipeMeta: document.getElementById('detailRecipeMeta'),
@@ -480,9 +481,11 @@ async function loadRecipes() {
     state.recipes = data.recipes || [];
     state.summary = data.summary;
 
-    if (state.recipes.length > 0 && !state.selectedRecipe) {
+    if (state.recipes.length === 0) {
+      state.selectedRecipe = null;
+    } else if (!state.selectedRecipe) {
       state.selectedRecipe = state.recipes[0];
-    } else if (state.recipes.length > 0 && state.selectedRecipe) {
+    } else {
       const updated = state.recipes.find(r => r.id === state.selectedRecipe.id);
       state.selectedRecipe = updated || state.recipes[0];
     }
@@ -828,7 +831,11 @@ function renderRecipeStudio() {
   }
 
   const recipe = state.selectedRecipe;
-  if (!recipe) return;
+  if (!recipe) {
+    DOM.recipeMainWorkspace?.classList.add('hidden');
+    return;
+  }
+  DOM.recipeMainWorkspace?.classList.remove('hidden');
 
   const m = recipe.metrics;
   DOM.detailRecipeName.textContent = recipe.name;

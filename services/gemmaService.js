@@ -372,7 +372,8 @@ function runBuiltInGemmaInvoiceParser(rawText, existingInventory) {
         const previousUnitCost = existingInv ? existingInv.unitCost : calculatedUnitCost * 0.85;
         const priceChangePct = Number((((calculatedUnitCost - previousUnitCost) / previousUnitCost) * 100).toFixed(1));
 
-        totalAmount += pkgCost;
+        const invoiceLineQuantity = line.match(/(\d+)\s+(?:CS|cs|CASE|EA|BAG|BX)/);
+        totalAmount += pkgCost * (invoiceLineQuantity ? parseInt(invoiceLineQuantity[1], 10) : 1);
 
         extractedItems.push({
           rawLine: line,
