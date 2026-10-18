@@ -143,6 +143,8 @@
       var rect = target.getBoundingClientRect();
       var x = (event.clientX - rect.left) / rect.width - 0.5;
       var y = (event.clientY - rect.top) / rect.height - 0.5;
+      target.style.setProperty('--spot-x', ((x + 0.5) * 100).toFixed(1) + '%');
+      target.style.setProperty('--spot-y', ((y + 0.5) * 100).toFixed(1) + '%');
       target.style.setProperty('--tilt-x', (y * -2.2).toFixed(2) + 'deg');
       target.style.setProperty('--tilt-y', (x * 2.2).toFixed(2) + 'deg');
       target.classList.add('is-tilting');
@@ -153,6 +155,8 @@
       target.classList.remove('is-tilting');
       target.style.removeProperty('--tilt-x');
       target.style.removeProperty('--tilt-y');
+      target.style.removeProperty('--spot-x');
+      target.style.removeProperty('--spot-y');
     });
   }
 
@@ -184,6 +188,29 @@
     });
   }
 
+  function addActiveTabIndicator() {
+    var container = document.querySelector('.nav-container');
+    if (!container) return;
+    var indicator = document.createElement('span');
+    indicator.className = 'nav-active-indicator';
+    indicator.setAttribute('aria-hidden', 'true');
+    container.appendChild(indicator);
+    function update() {
+      var active = container.querySelector('.nav-tab.active');
+      if (!active) return;
+      var containerRect = container.getBoundingClientRect();
+      var tabRect = active.getBoundingClientRect();
+      indicator.style.width = tabRect.width + 'px';
+      indicator.style.transform = 'translate3d(' + (tabRect.left - containerRect.left + container.scrollLeft) + 'px,0,0)';
+    }
+    update();
+    window.addEventListener('resize', update, { passive: true });
+    container.addEventListener('scroll', update, { passive: true });
+    container.querySelectorAll('.nav-tab').forEach(function (tab) {
+      tab.addEventListener('click', function () { window.requestAnimationFrame(update); });
+    });
+  }
+
   ready(function () {
     runPreloader();
     document.documentElement.classList.add('premium-motion-ready');
@@ -194,6 +221,7 @@
     addDynamicTilt();
     addHeroParallax();
     addTabTransitions();
+    addActiveTabIndicator();
     window.setTimeout(function () { document.documentElement.classList.add('app-ready'); }, reducedMotion ? 0 : 80);
   });
 })();
