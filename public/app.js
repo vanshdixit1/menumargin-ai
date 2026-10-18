@@ -21,8 +21,21 @@ const state = {
   ,workspaceMode: 'demo',
   user: null,
   authMode: 'register',
-  authIntent: null
+  authIntent: null,
+  refreshCount: 0
 };
+
+function beginDataRefresh() {
+  state.refreshCount += 1;
+  document.documentElement.classList.add('data-refreshing');
+}
+
+function endDataRefresh() {
+  state.refreshCount = Math.max(0, state.refreshCount - 1);
+  if (state.refreshCount === 0) {
+    document.documentElement.classList.remove('data-refreshing');
+  }
+}
 
 // DOM Selectors
 const DOM = {
@@ -436,6 +449,7 @@ async function switchProfile(profileId) {
 // Load Inventory
 async function loadInventory() {
   showInventorySkeleton();
+  beginDataRefresh();
   try {
     const res = await fetch('/api/inventory');
     if (!res.ok) throw new Error(`Inventory request failed (${res.status})`);
@@ -451,6 +465,8 @@ async function loadInventory() {
     `;
     DOM.dashboardInflationList.innerHTML = renderInlineError('Inflation signals are unavailable right now.', 'Retry', 'loadInventory()');
     showToast('Could not load wholesale pantry data', 'danger');
+  } finally {
+    endDataRefresh();
   }
 }
 
@@ -474,6 +490,7 @@ function showInventorySkeleton() {
 // Load Recipes
 async function loadRecipes() {
   showDishListSkeleton();
+  beginDataRefresh();
   try {
     const res = await fetch('/api/recipes');
     if (!res.ok) throw new Error(`Recipe request failed (${res.status})`);
@@ -500,6 +517,8 @@ async function loadRecipes() {
     DOM.dashboardDishesList.innerHTML = renderInlineError('Menu margin data is unavailable right now.', 'Retry', 'loadRecipes()');
     DOM.recipeSelectorList.innerHTML = renderInlineError('Recipes could not be loaded.', 'Retry', 'loadRecipes()');
     showToast('Could not load recipe data', 'danger');
+  } finally {
+    endDataRefresh();
   }
 }
 

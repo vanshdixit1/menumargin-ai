@@ -1130,6 +1130,36 @@ code, kbd, samp, pre {
   overflow: hidden;
 }
 
+.app-main::before {
+  content: '';
+  position: fixed;
+  z-index: 8999;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  pointer-events: none;
+  transform: scaleX(0);
+  transform-origin: left;
+  background: linear-gradient(90deg, var(--brand-primary), #c4b5fd, var(--brand-primary));
+  box-shadow: 0 0 16px var(--brand-glow);
+}
+
+.data-refreshing .app-main::before {
+  transform: scaleX(0.72);
+  animation: refreshProgress 900ms var(--ease-standard) infinite alternate;
+}
+
+.data-refreshing .app-main > .tab-pane.active {
+  opacity: 0.82;
+  transition: opacity var(--motion-fast) var(--ease-standard);
+}
+
+@keyframes refreshProgress {
+  from { transform: scaleX(0.16); }
+  to { transform: scaleX(0.82); }
+}
+
 .table-responsive,
 .table-container {
   max-width: 100%;
