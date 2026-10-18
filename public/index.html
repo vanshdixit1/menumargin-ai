@@ -79,6 +79,9 @@
         <button class="btn btn-secondary btn-sm" id="btnNewWorkspace" title="Create another business workspace">
           <span>New Workspace</span>
         </button>
+        <button class="btn btn-ghost btn-sm" id="btnAccount" title="Sign in or manage your account">
+          <span>Sign in</span>
+        </button>
 
         <button class="theme-toggle-btn" id="btnThemeToggle" type="button" aria-label="Toggle light/dark theme" title="Toggle color theme">
           <svg class="theme-icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -582,6 +585,10 @@
         <button class="btn btn-primary btn-md" id="btnOpenNewItemModal">
           + Add Inventory Item
         </button>
+        <button class="btn btn-secondary btn-md" id="btnImportInventory">
+          Import CSV
+        </button>
+        <input type="file" id="inventoryCsvInput" accept=".csv,text/csv" class="hidden">
       </div>
 
       <div class="card">
@@ -761,7 +768,7 @@
         <div class="tier-card">
           <span class="tier-badge">Solo Starter</span>
           <h3 class="tier-name">Food Truck & Home Baker</h3>
-          <div class="tier-price"><span class="price-currency">$</span>19<span class="price-period">/mo</span></div>
+          <div class="tier-price">Free during prototype</div>
           <p class="tier-desc">For single-location food trucks and micro-bakeries.</p>
           <ul class="tier-features">
             <li>✓ Unlimited Invoice Photo Scans (Gemma)</li>
@@ -774,7 +781,7 @@
         <div class="tier-card featured">
           <span class="tier-badge popular">Most Popular</span>
           <h3 class="tier-name">Artisan Kitchen & Cafe</h3>
-          <div class="tier-price"><span class="price-currency">$</span>39<span class="price-period">/mo</span></div>
+          <div class="tier-price">Free during prototype</div>
           <p class="tier-desc">For full-service cafes, bakeries, and busy restaurants.</p>
           <ul class="tier-features">
             <li>✓ Everything in Solo Starter</li>
@@ -788,7 +795,7 @@
         <div class="tier-card">
           <span class="tier-badge">Consultant</span>
           <h3 class="tier-name">Hospitality Consultant</h3>
-          <div class="tier-price"><span class="price-currency">$</span>99<span class="price-period">/mo</span></div>
+          <div class="tier-price">Free during prototype</div>
           <p class="tier-desc">For freelance kitchen consultants auditing multiple clients.</p>
           <ul class="tier-features">
             <li>✓ Multi-Restaurant Client Profiles</li>
@@ -835,7 +842,40 @@
           <span>Open the seeded bakery example with invoice inflation and Gemma recommendations.</span>
         </button>
       </div>
-      <p class="workspace-privacy-note">Your setup is stored locally in this free prototype. You can change or reset it anytime.</p>
+      <p class="workspace-privacy-note">Free forever for this prototype. Your account keeps your workspaces private and lets you return from another device after deployment.</p>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="modalAuth" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+      <div class="modal-card modal-sm">
+        <div class="modal-header">
+          <div>
+            <h3 class="modal-title" id="authTitle">Create your free account</h3>
+            <p class="modal-subtitle" id="authSubtitle">Your business data stays separated by workspace.</p>
+          </div>
+          <button class="modal-close" id="btnCloseAuth" aria-label="Close dialog">&times;</button>
+        </div>
+        <form id="authForm" class="modal-form">
+          <div class="modal-body">
+            <div class="form-group" id="authNameGroup">
+              <label for="authName" class="form-label">Your name</label>
+              <input id="authName" class="form-input" autocomplete="name" placeholder="Chef / Owner">
+            </div>
+            <div class="form-group">
+              <label for="authEmail" class="form-label">Email</label>
+              <input id="authEmail" class="form-input" type="email" autocomplete="email" required>
+            </div>
+            <div class="form-group">
+              <label for="authPassword" class="form-label">Password</label>
+              <input id="authPassword" class="form-input" type="password" minlength="8" autocomplete="new-password" required>
+            </div>
+            <p class="auth-error hidden" id="authError" role="alert"></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-ghost" id="btnToggleAuthMode">Already have an account? Sign in</button>
+            <button type="submit" class="btn btn-primary" id="btnSubmitAuth">Create free account</button>
+          </div>
+        </form>
     </div>
   </div>
 
@@ -846,6 +886,7 @@
           <h3 class="modal-title" id="workspaceSetupTitle">Create your business workspace</h3>
           <p class="modal-subtitle">Start with your business basics, then add ingredients and menu products.</p>
         </div>
+
         <button class="modal-close" id="btnCloseWorkspaceSetup" aria-label="Close dialog">&times;</button>
       </div>
       <form id="workspaceSetupForm" class="modal-form">
@@ -893,6 +934,37 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" id="btnCancelWorkspaceSetup">Cancel</button>
           <button type="submit" class="btn btn-primary">Create free workspace</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="modalWorkspaceSettings" role="dialog" aria-modal="true" aria-labelledby="workspaceSettingsTitle">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title" id="workspaceSettingsTitle">Workspace settings</h3>
+          <p class="modal-subtitle">Update your business profile or clear its ingredients and dishes.</p>
+        </div>
+        <button class="modal-close" id="btnCloseWorkspaceSettings" aria-label="Close dialog">&times;</button>
+      </div>
+      <form id="workspaceSettingsForm" class="modal-form">
+        <div class="modal-body">
+          <div class="form-row-2">
+            <div class="form-group"><label class="form-label" for="settingsBusinessName">Business name</label><input id="settingsBusinessName" class="form-input" required></div>
+            <div class="form-group"><label class="form-label" for="settingsBusinessType">Business type</label><input id="settingsBusinessType" class="form-input"></div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group"><label class="form-label" for="settingsLocation">Location</label><input id="settingsLocation" class="form-input"></div>
+            <div class="form-group"><label class="form-label" for="settingsTarget">Target food cost %</label><input id="settingsTarget" class="form-input" type="number" min="1" max="100" step="0.5"></div>
+          </div>
+          <div class="workspace-setup-next"><span class="workspace-setup-icon">!</span><div><strong>Danger zone</strong><span>Reset removes this workspace's ingredients and dishes. It does not affect the demo.</span></div></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" id="btnLogout">Sign out</button>
+          <button type="button" class="btn btn-danger" id="btnResetWorkspace">Reset workspace data</button>
+          <button type="button" class="btn btn-secondary" id="btnCancelWorkspaceSettings">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save changes</button>
         </div>
       </form>
     </div>

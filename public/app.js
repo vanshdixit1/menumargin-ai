@@ -18,7 +18,10 @@ const state = {
   gemmaStatus: null,
   hasAnimatedDashboard: false,
   selectedInvoiceFile: null
-  ,workspaceMode: 'demo'
+  ,workspaceMode: 'demo',
+  user: null,
+  authMode: 'register',
+  authIntent: null
 };
 
 // DOM Selectors
@@ -34,6 +37,19 @@ const DOM = {
   btnPartnerInfo: document.getElementById('btnPartnerInfo'),
   btnScanInvoiceHeader: document.getElementById('btnScanInvoiceHeader'),
   btnNewWorkspace: document.getElementById('btnNewWorkspace'),
+  btnAccount: document.getElementById('btnAccount'),
+  modalAuth: document.getElementById('modalAuth'),
+  authForm: document.getElementById('authForm'),
+  authName: document.getElementById('authName'),
+  authNameGroup: document.getElementById('authNameGroup'),
+  authEmail: document.getElementById('authEmail'),
+  authPassword: document.getElementById('authPassword'),
+  authError: document.getElementById('authError'),
+  authTitle: document.getElementById('authTitle'),
+  authSubtitle: document.getElementById('authSubtitle'),
+  btnCloseAuth: document.getElementById('btnCloseAuth'),
+  btnToggleAuthMode: document.getElementById('btnToggleAuthMode'),
+  btnSubmitAuth: document.getElementById('btnSubmitAuth'),
   btnThemeToggle: document.getElementById('btnThemeToggle'),
   workspaceWelcome: document.getElementById('workspaceWelcome'),
   btnStartWorkspace: document.getElementById('btnStartWorkspace'),
@@ -42,6 +58,16 @@ const DOM = {
   workspaceSetupForm: document.getElementById('workspaceSetupForm'),
   btnCloseWorkspaceSetup: document.getElementById('btnCloseWorkspaceSetup'),
   btnCancelWorkspaceSetup: document.getElementById('btnCancelWorkspaceSetup'),
+  modalWorkspaceSettings: document.getElementById('modalWorkspaceSettings'),
+  workspaceSettingsForm: document.getElementById('workspaceSettingsForm'),
+  btnCloseWorkspaceSettings: document.getElementById('btnCloseWorkspaceSettings'),
+  btnCancelWorkspaceSettings: document.getElementById('btnCancelWorkspaceSettings'),
+  btnResetWorkspace: document.getElementById('btnResetWorkspace'),
+  btnLogout: document.getElementById('btnLogout'),
+  settingsBusinessName: document.getElementById('settingsBusinessName'),
+  settingsBusinessType: document.getElementById('settingsBusinessType'),
+  settingsLocation: document.getElementById('settingsLocation'),
+  settingsTarget: document.getElementById('settingsTarget'),
   workspaceBusinessName: document.getElementById('workspaceBusinessName'),
   workspaceBusinessType: document.getElementById('workspaceBusinessType'),
   workspaceLocation: document.getElementById('workspaceLocation'),
@@ -116,6 +142,8 @@ const DOM = {
   inventoryCountBadge: document.getElementById('inventoryCountBadge'),
   inventoryTableBody: document.getElementById('inventoryTableBody'),
   btnOpenNewItemModal: document.getElementById('btnOpenNewItemModal'),
+  btnImportInventory: document.getElementById('btnImportInventory'),
+  inventoryCsvInput: document.getElementById('inventoryCsvInput'),
 
   // 1-Page Profit Audit
   btnRefreshAudit: document.getElementById('btnRefreshAudit'),
@@ -197,6 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
 async function initApp() {
   try {
     initTheme();
+    await loadAuthState();
     await checkSystemStatus();
     await loadProfiles();
     await loadInventory();
@@ -211,6 +240,133 @@ async function initApp() {
     console.error('Initialization error:', err);
     showToast('Error loading application data', 'danger');
   }
+}
+
+async function loadAuthState() {
+  try {
+    const response = await fetch('/api/auth/me');
+    const data = await readJsonResponse(response, 'Account loading');
+    state.user = data.user || null;
+    updateAccountButton();
+  } catch (error) {
+    console.warn('Account state unavailable:', error);
+  }
+}
+
+function updateAccountButton() {
+  if (DOM.btnAccount) DOM.btnAccount.textContent = state.user ? state.user.name : 'Sign in';
+}
+
+function openAuthModal(mode = 'register', intent = null) {
+  state.authMode = mode;
+  state.authIntent = intent;
+  DOM.authError.classList.add('hidden');
+  DOM.authForm.reset();
+  DOM.authNameGroup.classList.toggle('hidden', mode === 'login');
+  DOM.authTitle.textContent = mode === 'login' ? 'Sign in to MenuMargin' : 'Create your free account';
+  DOM.authSubtitle.textContent = mode === 'login' ? 'Access your private business workspaces.' : 'Your business data stays separated by workspace.';
+  DOM.btnSubmitAuth.textContent = mode === 'login' ? 'Sign in' : 'Create free account';
+  DOM.btnToggleAuthMode.textContent = mode === 'login' ? 'Need an account? Create one' : 'Already have an account? Sign in';
+  openModal(DOM.modalAuth);
+  DOM.authEmail.focus();
+}
+
+async function handleAuthSubmit(event) {
+  event.preventDefault();
+  DOM.authError.classList.add('hidden');
+  try {
+    const endpoint = state.authMode === 'login' ? '/api/auth/login' : '/api/auth/register';
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: DOM.authName.value.trim(),
+        email: DOM.authEmail.value.trim(),
+        password: DOM.authPassword.value
+      })
+    });
+    const data = await readJsonResponse(response, 'Account authentication');
+    state.user = data.user;
+    updateAccountButton();
+    closeModal(DOM.modalAuth);
+    showToast(`Welcome, ${state.user.name}.`, 'success');
+    if (state.authIntent === 'workspace') {
+      openModal(DOM.modalWorkspaceSetup);
+      DOM.workspaceBusinessName.focus();
+    }
+
+  } catch (error) {
+    DOM.authError.textContent = error.message;
+    DOM.authError.classList.remove('hidden');
+  }
+
+}
+
+function openWorkspaceSettings() {
+  const profile = state.activeProfile;
+  if (!state.user) {
+    showToast('Sign in to manage your workspaces.', 'warning');
+    return;
+  }
+  const demo = !profile || ['bakery', 'cafe', 'foodtruck'].includes(profile.id);
+  DOM.settingsBusinessName.value = profile.name || '';
+  DOM.settingsBusinessType.value = profile.type || '';
+  DOM.settingsLocation.value = profile.location || '';
+  DOM.settingsTarget.value = profile.targetFoodCostPct || 28;
+  DOM.workspaceSettingsForm.querySelector('input').disabled = demo;
+  DOM.settingsBusinessType.disabled = demo;
+  DOM.settingsLocation.disabled = demo;
+  DOM.settingsTarget.disabled = demo;
+  DOM.workspaceSettingsForm.querySelector('button[type="submit"]').disabled = demo;
+  DOM.btnResetWorkspace.disabled = demo;
+  openModal(DOM.modalWorkspaceSettings);
+}
+
+async function saveWorkspaceSettings(event) {
+  event.preventDefault();
+  try {
+    const response = await fetch('/api/profile', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: DOM.settingsBusinessName.value.trim(),
+        type: DOM.settingsBusinessType.value.trim(),
+        location: DOM.settingsLocation.value.trim(),
+        targetFoodCostPct: Number(DOM.settingsTarget.value)
+      })
+    });
+    const data = await readJsonResponse(response, 'Workspace settings update');
+    state.activeProfile = data.profile;
+    closeModal(DOM.modalWorkspaceSettings);
+    await loadProfiles();
+    await loadRecipes();
+    showToast('Workspace settings updated.', 'success');
+  } catch (error) {
+    showToast(error.message || 'Could not update workspace settings', 'danger');
+  }
+}
+
+async function resetWorkspaceData() {
+  if (!window.confirm('Reset this workspace? Its ingredients and dishes will be removed.')) return;
+  try {
+    const response = await fetch('/api/profile/reset', { method: 'POST' });
+    await readJsonResponse(response, 'Workspace reset');
+    closeModal(DOM.modalWorkspaceSettings);
+    await Promise.all([loadInventory(), loadRecipes()]);
+    showToast('Workspace data reset.', 'success');
+  } catch (error) {
+    showToast(error.message || 'Could not reset workspace', 'danger');
+  }
+}
+
+async function logout() {
+  await fetch('/api/auth/logout', { method: 'POST' });
+  state.user = null;
+  localStorage.removeItem('menumargin_workspace_mode');
+  updateAccountButton();
+  closeModal(DOM.modalWorkspaceSettings);
+  showToast('Signed out.', 'success');
+  window.location.href = '/?demo=1';
 }
 
 /* Staggered KPI card entrance reveal */
@@ -902,9 +1058,33 @@ function renderFeedbacks(feedbacks) {
 /* ==========================================================================
    INTERACTIONS & EVENT HANDLERS
    ========================================================================== */
+async function handleInventoryCsvImport(event) {
+  const file = event.target.files?.[0];
+  if (!file) return;
+  try {
+    const csv = await file.text();
+    const response = await fetch('/api/inventory/import', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ csv })
+    });
+    const result = await readJsonResponse(response, 'Inventory CSV import');
+    showToast(`${result.importedCount} ingredients imported.`, 'success');
+    await Promise.all([loadInventory(), loadRecipes()]);
+  } catch (error) {
+    showToast(error.message || 'Could not import CSV', 'danger');
+  } finally {
+    event.target.value = '';
+  }
+}
+
 function setupEventListeners() {
   setupCommandPalette();
   DOM.btnStartWorkspace.addEventListener('click', () => {
+    if (!state.user) {
+      openAuthModal('register', 'workspace');
+      return;
+    }
     closeWorkspaceWelcome();
     openModal(DOM.modalWorkspaceSetup);
     DOM.workspaceBusinessName.focus();
@@ -915,12 +1095,33 @@ function setupEventListeners() {
     showToast('Demo workspace opened. Explore the full bakery workflow.', 'success');
   });
   DOM.btnNewWorkspace.addEventListener('click', () => {
+    if (!state.user) {
+      openAuthModal('register', 'workspace');
+      return;
+    }
     openModal(DOM.modalWorkspaceSetup);
     DOM.workspaceBusinessName.focus();
   });
   DOM.btnCloseWorkspaceSetup.addEventListener('click', () => closeModal(DOM.modalWorkspaceSetup));
   DOM.btnCancelWorkspaceSetup.addEventListener('click', () => closeModal(DOM.modalWorkspaceSetup));
   DOM.workspaceSetupForm.addEventListener('submit', createWorkspace);
+  DOM.btnImportInventory.addEventListener('click', () => DOM.inventoryCsvInput.click());
+  DOM.inventoryCsvInput.addEventListener('change', handleInventoryCsvImport);
+  DOM.btnAccount.addEventListener('click', () => {
+    if (state.user) {
+      openWorkspaceSettings();
+      return;
+    }
+    openAuthModal('login');
+  });
+  DOM.btnCloseAuth.addEventListener('click', () => closeModal(DOM.modalAuth));
+  DOM.btnToggleAuthMode.addEventListener('click', () => openAuthModal(state.authMode === 'login' ? 'register' : 'login', state.authIntent));
+  DOM.authForm.addEventListener('submit', handleAuthSubmit);
+  DOM.btnCloseWorkspaceSettings.addEventListener('click', () => closeModal(DOM.modalWorkspaceSettings));
+  DOM.btnCancelWorkspaceSettings.addEventListener('click', () => closeModal(DOM.modalWorkspaceSettings));
+  DOM.workspaceSettingsForm.addEventListener('submit', saveWorkspaceSettings);
+  DOM.btnResetWorkspace.addEventListener('click', resetWorkspaceData);
+  DOM.btnLogout.addEventListener('click', logout);
 
   // Navigation Tabs
   DOM.navTabs.forEach(tab => {

@@ -4,6 +4,8 @@ const path = require('path');
 const multer = require('multer');
 const dataStore = require('./services/dataStore');
 const gemmaService = require('./services/gemmaService');
+const authStore = require('./services/authStore');
+const { optionalAuth, requireAuth, getToken, sessionCookie, clearSessionCookie } = require('./services/authMiddleware');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,9 +18,64 @@ const upload = multer({
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(optionalAuth);
 
 // Serve static frontend assets
 app.use(express.static(path.join(__dirname, 'public')));
+
+function requestedWorkspace(req) {
+  const cookie = String(req.headers.cookie || '').split(';').map(value => value.trim()).find(value => value.startsWith('mm_workspace='));
+  return cookie ? decodeURIComponent(cookie.slice('mm_workspace='.length)) : null;
+}
+
+function selectRequestWorkspace(req) {
+  if (!req.user) {
+    dataStore.setActiveProfile('bakery');
+    return 'bakery';
+  }
+  const ids = authStore.listWorkspaceIds(req.user.id);
+  const candidate = requestedWorkspace(req);
+  const profileId = candidate && authStore.canAccessWorkspace(req.user.id, candidate) ? candidate : ids[0];
+  if (profileId) dataStore.setActiveProfile(profileId);
+  return profileId || 'bakery';
+}
+
+function setWorkspaceCookie(res, profileId) {
+  res.setHeader('Set-Cookie', `mm_workspace=${encodeURIComponent(profileId)}; Path=/; SameSite=Lax`);
+}
+
+// Authentication and account lifecycle
+app.get('/api/auth/me', (req, res) => {
+  res.json({ authenticated: Boolean(req.user), user: req.user, workspaceIds: req.user ? authStore.listWorkspaceIds(req.user.id) : [] });
+});
+
+app.post('/api/auth/register', (req, res) => {
+  try {
+    const user = authStore.createUser(req.body);
+    const session = authStore.createSession(user.id);
+    res.setHeader('Set-Cookie', sessionCookie(session.token, session.expiresAt));
+    res.status(201).json({ success: true, user });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.post('/api/auth/login', (req, res) => {
+  try {
+    const user = authStore.authenticate(req.body.email, req.body.password);
+    const session = authStore.createSession(user.id);
+    res.setHeader('Set-Cookie', sessionCookie(session.token, session.expiresAt));
+    res.json({ success: true, user });
+  } catch (error) {
+    res.status(401).json({ error: error.message });
+  }
+});
+
+app.post('/api/auth/logout', (req, res) => {
+  authStore.revokeSession(getToken(req));
+  res.setHeader('Set-Cookie', clearSessionCookie());
+  res.json({ success: true });
+});
 
 /* ==========================================================================
    API ROUTES
@@ -43,21 +100,28 @@ app.get('/api/status', async (req, res) => {
 // 2. Profiles
 app.get('/api/profile', (req, res) => {
   try {
+    const activeId = selectRequestWorkspace(req);
     const data = dataStore.getData();
     const active = dataStore.getActiveProfile();
+    const allowed = req.user ? new Set(['bakery', 'cafe', 'foodtruck', ...authStore.listWorkspaceIds(req.user.id)]) : new Set(['bakery', 'cafe', 'foodtruck']);
     res.json({
       active,
-      availableProfiles: Object.values(data.profiles)
+      availableProfiles: Object.values(data.profiles).filter(profile => allowed.has(profile.id)),
+      workspaceId: activeId
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-app.post('/api/profile/select', (req, res) => {
+app.post('/api/profile/select', requireAuth, (req, res) => {
   try {
     const { profileId } = req.body;
+    if (!['bakery', 'cafe', 'foodtruck'].includes(profileId) && !authStore.canAccessWorkspace(req.user.id, profileId)) {
+      return res.status(403).json({ error: 'You do not have access to this workspace' });
+    }
     const selected = dataStore.setActiveProfile(profileId);
+    setWorkspaceCookie(res, profileId);
     res.json({ success: true, profile: selected });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -66,15 +130,20 @@ app.post('/api/profile/select', (req, res) => {
 
 app.post('/api/profile', (req, res) => {
   try {
+    if (!req.user) return res.status(401).json({ error: 'Create an account before creating a workspace', code: 'AUTH_REQUIRED' });
     const profile = dataStore.createProfile(req.body);
+    authStore.createWorkspace(req.user.id, profile);
+    setWorkspaceCookie(res, profile.id);
     res.status(201).json({ success: true, profile });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 });
 
-app.put('/api/profile', (req, res) => {
+app.put('/api/profile', requireAuth, (req, res) => {
   try {
+    const profileId = selectRequestWorkspace(req);
+    if (!authStore.canAccessWorkspace(req.user.id, profileId)) return res.status(403).json({ error: 'Workspace access denied' });
     const active = dataStore.getActiveProfile();
     const updated = { ...active, ...req.body };
     const data = dataStore.getData();
@@ -86,9 +155,37 @@ app.put('/api/profile', (req, res) => {
   }
 });
 
+app.post('/api/profile/reset', requireAuth, (req, res) => {
+  try {
+    const profileId = selectRequestWorkspace(req);
+    if (!authStore.canAccessWorkspace(req.user.id, profileId)) return res.status(403).json({ error: 'Workspace access denied' });
+    const data = dataStore.getData();
+    data.inventory = data.inventory.filter(item => item.profileId !== profileId);
+    data.recipes = data.recipes.filter(recipe => recipe.profileId !== profileId);
+    dataStore.saveData(data);
+    res.json({ success: true, profileId });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.delete('/api/profile', requireAuth, (req, res) => {
+  try {
+    const profileId = selectRequestWorkspace(req);
+    if (!authStore.canAccessWorkspace(req.user.id, profileId)) return res.status(403).json({ error: 'Workspace access denied' });
+    dataStore.deleteProfile(profileId);
+    authStore.deleteWorkspace(req.user.id, profileId);
+    setWorkspaceCookie(res, 'bakery');
+    res.json({ success: true });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
 // 3. Wholesale Inventory & Price History
 app.get('/api/inventory', (req, res) => {
   try {
+    selectRequestWorkspace(req);
     const items = dataStore.getInventory();
     // Calculate category summaries and overall inflation index
     const totalItems = items.length;
@@ -112,6 +209,8 @@ app.get('/api/inventory', (req, res) => {
 
 app.post('/api/inventory', (req, res) => {
   try {
+    if (!req.user) return res.status(401).json({ error: 'Sign in required', code: 'AUTH_REQUIRED' });
+    selectRequestWorkspace(req);
     const item = req.body;
     if (!item.id) item.id = 'inv-' + Date.now();
     item.lastUpdated = new Date().toISOString().split('T')[0];
@@ -119,6 +218,40 @@ app.post('/api/inventory', (req, res) => {
     res.json({ success: true, item: saved });
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/inventory/import', requireAuth, (req, res) => {
+  try {
+    const csv = String(req.body.csv || '');
+    const lines = csv.split(/\r?\n/).map(line => line.trim()).filter(Boolean);
+    if (lines.length < 2) return res.status(400).json({ error: 'CSV must include a header row and at least one ingredient' });
+    const headers = lines.shift().split(',').map(value => value.trim().toLowerCase());
+    const allowed = ['name', 'category', 'supplier', 'packagequantity', 'packageunit', 'packagecost', 'unitcost', 'unit'];
+    const missing = ['name', 'unitcost', 'unit'].filter(field => !headers.includes(field));
+    if (missing.length) return res.status(400).json({ error: `CSV is missing required columns: ${missing.join(', ')}` });
+    selectRequestWorkspace(req);
+    const imported = [];
+    for (const line of lines) {
+      const values = line.split(',').map(value => value.trim().replace(/^"|"$/g, ''));
+      const row = Object.fromEntries(headers.map((header, index) => [header, values[index] || '']));
+      const item = {
+        id: `inv-${Date.now()}-${imported.length}`,
+        name: row.name,
+        category: row.category || 'General',
+        supplier: row.supplier || 'General Supplier',
+        packageQuantity: Number(row.packagequantity || 1),
+        packageUnit: row.packageunit || row.unit,
+        packageCost: Number(row.packagecost || row.unitcost),
+        unitCost: Number(row.unitcost),
+        unit: row.unit
+      };
+      const saved = dataStore.updateInventoryItem(item);
+      imported.push(saved);
+    }
+    res.status(201).json({ success: true, importedCount: imported.length, items: imported });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
 });
 
@@ -179,6 +312,7 @@ app.get('/api/convert-unit', (req, res) => {
 // 4. Recipes with Real-Time COGS & Margin Metrics (OOP Abstraction)
 app.get('/api/recipes', (req, res) => {
   try {
+    selectRequestWorkspace(req);
     const profile = dataStore.getActiveProfile();
     const inventory = dataStore.getInventory();
     const recipeEntities = dataStore.getRecipeEntities();
@@ -213,6 +347,8 @@ app.get('/api/recipes', (req, res) => {
 
 app.post('/api/recipes', (req, res) => {
   try {
+    if (!req.user) return res.status(401).json({ error: 'Sign in required', code: 'AUTH_REQUIRED' });
+    selectRequestWorkspace(req);
     const profile = dataStore.getActiveProfile();
     const recipe = {
       ...req.body,
@@ -228,6 +364,8 @@ app.post('/api/recipes', (req, res) => {
 
 app.delete('/api/recipes/:id', (req, res) => {
   try {
+    if (!req.user) return res.status(401).json({ error: 'Sign in required', code: 'AUTH_REQUIRED' });
+    selectRequestWorkspace(req);
     dataStore.deleteRecipe(req.params.id);
     res.json({ success: true });
   } catch (error) {
@@ -238,6 +376,8 @@ app.delete('/api/recipes/:id', (req, res) => {
 // 5. Gemma AI Invoice Extraction
 app.post('/api/invoice/parse', upload.single('invoiceFile'), async (req, res) => {
   try {
+    if (!req.user) return res.status(401).json({ error: 'Sign in required', code: 'AUTH_REQUIRED' });
+    selectRequestWorkspace(req);
     let invoiceText = req.body.rawText || '';
 
     // If file uploaded, convert to text / simulated OCR
@@ -293,6 +433,8 @@ app.post('/api/invoice/parse', upload.single('invoiceFile'), async (req, res) =>
 // 6. Gemma AI Recipe Optimization
 app.post('/api/recipes/:id/optimize', async (req, res) => {
   try {
+    if (!req.user) return res.status(401).json({ error: 'Sign in required', code: 'AUTH_REQUIRED' });
+    selectRequestWorkspace(req);
     const profile = dataStore.getActiveProfile();
     const inventory = dataStore.getInventory();
     const recipes = dataStore.getRecipes();
@@ -315,6 +457,7 @@ app.post('/api/recipes/:id/optimize', async (req, res) => {
 // 7. Full Printable Audit Report (Delegates to MarginAudit Aggregate)
 app.get('/api/audit-report', (req, res) => {
   try {
+    selectRequestWorkspace(req);
     const audit = dataStore.createMarginAudit();
     if (req.query.format === 'crisp' || req.query.crisp === 'true') {
       return res.json(audit.toCrispExecutiveSummary());
@@ -341,6 +484,7 @@ app.get('/api/audit-report', (req, res) => {
 // 7b. Crisp Executive Overview (Clean, High-Signal Intelligence)
 app.get('/api/crisp-overview', (req, res) => {
   try {
+    selectRequestWorkspace(req);
     const audit = dataStore.createMarginAudit();
     res.json({
       executiveAudit: audit.toCrispExecutiveSummary(),
@@ -362,7 +506,7 @@ app.get('/api/feedback', (req, res) => {
   }
 });
 
-app.post('/api/feedback', (req, res) => {
+app.post('/api/feedback', requireAuth, (req, res) => {
   try {
     const entry = dataStore.addFeedback(req.body);
     res.json({ success: true, feedback: entry });
@@ -374,6 +518,7 @@ app.post('/api/feedback', (req, res) => {
 // 9. Reset Demo Data
 app.post('/api/reset', (req, res) => {
   try {
+    if (req.user || req.query.demo !== '1') return res.status(403).json({ error: 'Demo reset requires ?demo=1 and no signed-in account' });
     dataStore.resetToDefault();
     res.json({ success: true, message: 'Data reset to defaults' });
   } catch (error) {

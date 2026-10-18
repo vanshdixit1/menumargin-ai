@@ -2443,6 +2443,19 @@ code, kbd, samp, pre {
   overflow: hidden;
 }
 
+.modal-sm {
+  max-width: 440px;
+}
+
+.auth-error {
+  color: var(--rose-500);
+  background: var(--rose-subtle);
+  border: 1px solid var(--rose-border);
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 0.75rem;
+  font-size: 0.8rem;
+}
+
 .modal-card.modal-lg {
   max-width: 840px;
 }

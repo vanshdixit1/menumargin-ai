@@ -255,6 +255,21 @@ class DataStore extends EventEmitter {
     return profile.toJSON();
   }
 
+  deleteProfile(profileId) {
+    if (['bakery', 'cafe', 'foodtruck'].includes(profileId)) {
+      throw new Error('Demo workspaces cannot be deleted');
+    }
+    this.#profiles.delete(profileId);
+    for (const [id, item] of this.#inventory.entries()) {
+      if (item.profileId === profileId) this.#inventory.delete(id);
+    }
+    for (const [id, recipe] of this.#recipes.entries()) {
+      if (recipe.profileId === profileId) this.#recipes.delete(id);
+    }
+    this.#activeProfileId = 'bakery';
+    this.#persist();
+  }
+
   // Inventory Encapsulation & Crisp Abstraction
   getInventory() {
     const activeProfile = this.#profiles.get(this.#activeProfileId);
