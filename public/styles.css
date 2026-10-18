@@ -817,6 +817,59 @@ code, kbd, samp, pre {
   font-size: 0.86rem;
 }
 
+.kpi-help {
+  position: relative;
+  cursor: help;
+}
+
+.kpi-help::after {
+  position: absolute;
+  z-index: 10;
+  left: 0;
+  top: calc(100% + 0.65rem);
+  width: min(260px, 70vw);
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: var(--surface-3);
+  box-shadow: var(--shadow-md);
+  color: var(--text-main);
+  content: attr(data-tooltip);
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.45;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-4px);
+  transition: opacity var(--motion-fast) var(--ease-standard), transform var(--motion-fast) var(--ease-standard);
+}
+
+.kpi-help:hover::after,
+.kpi-help:focus-visible::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.kpi-sparkline {
+  display: block;
+  width: 100%;
+  max-width: 150px;
+  height: 24px;
+  margin: 0.55rem 0 0.2rem auto;
+  overflow: visible;
+  opacity: 0.8;
+}
+
+.kpi-sparkline path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.sparkline-healthy { color: var(--emerald-400); }
+.sparkline-danger { color: var(--rose-400); }
+
 .kpi-card:nth-child(3),
 .kpi-card:nth-child(4) {
   min-height: 148px;

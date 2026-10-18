@@ -180,7 +180,7 @@
       <div class="kpi-grid">
         <div class="kpi-card">
           <div class="kpi-header">
-            <span class="kpi-title">Average Food Cost %</span>
+            <span class="kpi-title kpi-help" tabindex="0" data-tooltip="Ingredient and packaging cost divided by menu revenue.">Average Food Cost %</span>
             <span class="kpi-icon-wrap bg-emerald" aria-hidden="true">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
             </span>
@@ -193,6 +193,7 @@
             <div class="kpi-progress-bar">
               <div class="kpi-progress-fill" id="kpiFoodCostFill" style="width: 50%;"></div>
             </div>
+            <svg class="kpi-sparkline sparkline-healthy" viewBox="0 0 120 24" aria-hidden="true"><path d="M2 18 C18 16, 22 14, 34 15 S50 10, 62 12 S79 8, 92 10 S108 5, 118 7"></path></svg>
             <div class="kpi-footer-sub">
               <span>Kitchen Target: <strong id="kpiTargetCost">28.0%</strong></span>
               <span class="target-marker">Benchmark: 25-30%</span>
@@ -202,7 +203,7 @@
 
         <div class="kpi-card kpi-hero">
           <div class="kpi-header">
-            <span class="kpi-title">Monthly Margin Leakage</span>
+            <span class="kpi-title kpi-help" tabindex="0" data-tooltip="Estimated margin lost each month when supplier increases are not reflected in menu prices.">Monthly Margin Leakage</span>
             <span class="kpi-icon-wrap bg-rose" aria-hidden="true">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
             </span>
@@ -213,6 +214,7 @@
               <span class="kpi-badge badge-danger" id="kpiAnnualLeakage">-$0 / yr</span>
             </div>
             <p class="kpi-caption">Unrecovered wholesale price spikes across active menu items</p>
+            <svg class="kpi-sparkline sparkline-danger" viewBox="0 0 120 24" aria-hidden="true"><path d="M2 8 C16 10, 24 5, 36 9 S52 8, 65 13 S83 10, 96 17 S108 15, 118 21"></path></svg>
             <div class="kpi-footer-sub">
               <span>Potential Recovery: <strong class="text-emerald" id="kpiRecoveryPct">100%</strong></span>
             </div>
@@ -221,7 +223,7 @@
 
         <div class="kpi-card">
           <div class="kpi-header">
-            <span class="kpi-title">Dishes At Risk</span>
+            <span class="kpi-title kpi-help" tabindex="0" data-tooltip="Menu items above the kitchen's target food-cost ceiling and requiring review.">Dishes At Risk</span>
             <span class="kpi-icon-wrap bg-amber" aria-hidden="true">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
             </span>
@@ -240,7 +242,7 @@
 
         <div class="kpi-card">
           <div class="kpi-header">
-            <span class="kpi-title">Wholesale Inflation Index</span>
+            <span class="kpi-title kpi-help" tabindex="0" data-tooltip="Weighted average supplier price movement across your active pantry inventory.">Wholesale Inflation Index</span>
             <span class="kpi-icon-wrap bg-blue" aria-hidden="true">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
             </span>
