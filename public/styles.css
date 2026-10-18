@@ -2617,6 +2617,26 @@ code, kbd, samp, pre {
   max-width: 840px;
 }
 
+/* The optimizer is a workspace, so it enters from the edge instead of
+   competing with the dashboard as a centered confirmation dialog. */
+#modalOptimizer {
+  justify-content: flex-end;
+  padding: 0;
+}
+
+#modalOptimizer .modal-card {
+  width: min(840px, 100%);
+  max-width: 840px;
+  min-height: 100vh;
+  border-radius: var(--radius-xl) 0 0 var(--radius-xl);
+  animation: optimizerDrawerIn 420ms var(--ease-standard) both;
+}
+
+@keyframes optimizerDrawerIn {
+  from { opacity: 0; transform: translateX(28px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
 @keyframes modalSpring {
   from { transform: translateY(18px) scale(0.94); opacity: 0; }
   to   { transform: translateY(0)     scale(1);    opacity: 1; }
@@ -3253,6 +3273,19 @@ code, kbd, samp, pre {
 
   .brand-tagline {
     max-width: 24ch;
+  }
+
+  #modalOptimizer .modal-card {
+    min-height: auto;
+    max-height: 100vh;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    align-self: flex-end;
+    animation-name: optimizerSheetIn;
+  }
+
+  @keyframes optimizerSheetIn {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
   }
   .dish-row-card {
     align-items: flex-start;
