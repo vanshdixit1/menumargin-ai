@@ -633,17 +633,20 @@ function countUp(el, targetVal, prefix = '', suffix = '', duration = 600) {
 
 function countUpInt(el, targetVal, prefix = '', suffix = '', duration = 500) {
   if (!el) return;
+  const renderValue = value => prefix === '$'
+    ? formatCurrency(value, 0) + suffix
+    : prefix + Math.round(value) + suffix;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    el.textContent = prefix + Math.round(targetVal) + suffix;
+    el.textContent = renderValue(targetVal);
     return;
   }
   const startTime = performance.now();
   function frame(now) {
     const pct = Math.min((now - startTime) / duration, 1);
     const ease = 1 - Math.pow(1 - pct, 3);
-    el.textContent = prefix + Math.round(targetVal * ease) + suffix;
+    el.textContent = renderValue(targetVal * ease);
     if (pct < 1) requestAnimationFrame(frame);
-    else el.textContent = prefix + targetVal + suffix;
+    else el.textContent = renderValue(targetVal);
   }
   requestAnimationFrame(frame);
 }
@@ -1029,7 +1032,7 @@ function renderAuditDocument() {
         <td>${formatPercent(m.targetFoodCostPct)}</td>
         <td>${m.monthlyVolume}</td>
         <td style="color: ${m.monthlyMarginLeakage > 0 ? '#dc2626' : '#64748b'}; font-weight: 600;">
-          ${m.monthlyMarginLeakage > 0 ? `-$${m.monthlyMarginLeakage}` : '$0'}
+          ${m.monthlyMarginLeakage > 0 ? `-${formatCurrency(m.monthlyMarginLeakage, 0)}` : formatCurrency(0, 0)}
         </td>
         <td>
           <span style="font-size: 0.75rem; font-weight: 700; color: ${m.marginStatus === 'CRITICAL_LEAKAGE' ? '#dc2626' : (m.marginStatus === 'WARNING' ? '#d97706' : '#059669')};">

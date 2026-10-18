@@ -81,6 +81,10 @@
   --sheet-text: #f8fafc;
 }
 
+.dashboard-signal-field .signal-grid {
+  opacity: 0.7;
+}
+
 [data-theme="light"],
 body.theme-light {
   /* Color Palette - Light Surface Hierarchy */
@@ -480,6 +484,10 @@ code, kbd, samp, pre {
   font-size: 0.74rem;
   color: var(--text-secondary);
   font-weight: 500;
+  max-width: 34ch;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .partner-badge {
@@ -786,6 +794,32 @@ code, kbd, samp, pre {
   background: var(--surface-1);
   border-bottom: 1px solid var(--border-subtle);
   overflow: hidden;
+}
+
+.kpi-card.kpi-hero {
+  grid-row: span 2;
+  min-height: 230px;
+  padding: 1.5rem;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(239, 68, 68, 0.16), transparent 44%),
+    linear-gradient(145deg, var(--surface-1), var(--rose-subtle));
+  border-color: var(--rose-border);
+  box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.08), var(--shadow-lg);
+}
+
+.kpi-card.kpi-hero .kpi-value {
+  font-size: clamp(2.25rem, 4vw, 3.4rem);
+  letter-spacing: -0.06em;
+}
+
+.kpi-card.kpi-hero .kpi-caption {
+  max-width: 28ch;
+  font-size: 0.86rem;
+}
+
+.kpi-card:nth-child(3),
+.kpi-card:nth-child(4) {
+  min-height: 148px;
 }
 
 .nav-container {
@@ -1270,7 +1304,7 @@ code, kbd, samp, pre {
 /* KPI Cards Grid */
 .kpi-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: minmax(1.4fr, 1.55fr) repeat(2, minmax(220px, 1fr));
   gap: 1.15rem;
   margin-bottom: 1.5rem;
 }
@@ -3158,6 +3192,15 @@ code, kbd, samp, pre {
   .kpi-grid {
     grid-template-columns: minmax(0, 1fr);
   }
+
+  .kpi-card.kpi-hero {
+    grid-row: auto;
+    min-height: 190px;
+  }
+
+  .brand-tagline {
+    max-width: 24ch;
+  }
   .dish-row-card {
     align-items: flex-start;
     flex-direction: column;
@@ -3380,7 +3423,7 @@ code, kbd, samp, pre {
   height: 360px;
   overflow: hidden;
   pointer-events: none;
-  opacity: 0.7;
+  opacity: 0.24;
   mask-image: linear-gradient(90deg, transparent, #000 34%, #000 72%, transparent);
 }
 
