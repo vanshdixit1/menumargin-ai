@@ -34,8 +34,10 @@ function selectRequestWorkspace(req) {
     return 'bakery';
   }
   const ids = authStore.listWorkspaceIds(req.user.id);
+  const profiles = dataStore.getData().profiles || {};
+  const availableIds = ids.filter(id => profiles[id]);
   const candidate = requestedWorkspace(req);
-  const profileId = candidate && authStore.canAccessWorkspace(req.user.id, candidate) ? candidate : ids[0];
+  const profileId = candidate && availableIds.includes(candidate) ? candidate : availableIds[0];
   if (profileId) dataStore.setActiveProfile(profileId);
   return profileId || 'bakery';
 }
