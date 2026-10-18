@@ -806,12 +806,13 @@ function renderDashboardInflationMovers() {
     return;
   }
 
-  DOM.dashboardInflationList.innerHTML = sorted.map(item => `
-    <div class="spike-item">
+  DOM.dashboardInflationList.innerHTML = sorted.map((item, index) => `
+    <div class="spike-item spike-item-surge" style="--spike-index: ${index}" tabindex="0" aria-label="${item.name} inflation ${formatDelta(item.priceChangePct)}">
       <div class="spike-info">
         <h4>${item.name}</h4>
         <span>${item.supplier} • Now ${formatCurrency(item.unitCost, 3)} / ${item.unit} (was ${formatCurrency(item.previousUnitCost || item.unitCost, 3)})</span>
       </div>
+      <svg class="spike-sparkline" viewBox="0 0 72 22" aria-hidden="true"><path d="${item.priceChangePct > 20 ? 'M2 18 C14 17, 16 13, 26 15 S39 9, 48 11 S60 4, 70 3' : 'M2 17 C14 15, 18 16, 28 13 S42 12, 50 9 S62 10, 70 7'}"></path></svg>
       <div class="spike-badge">${formatDelta(item.priceChangePct)}</div>
     </div>
   `).join('');
