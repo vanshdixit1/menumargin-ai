@@ -94,6 +94,7 @@ const DOM = {
   kpiAvgFoodCost: document.getElementById('kpiAvgFoodCost'),
   kpiFoodCostDelta: document.getElementById('kpiFoodCostDelta'),
   kpiFoodCostFill: document.getElementById('kpiFoodCostFill'),
+  kpiFoodCostGauge: document.getElementById('kpiFoodCostGauge'),
   kpiTargetCost: document.getElementById('kpiTargetCost'),
   kpiMonthlyLeakage: document.getElementById('kpiMonthlyLeakage'),
   kpiAnnualLeakage: document.getElementById('kpiAnnualLeakage'),
@@ -678,6 +679,8 @@ function renderDashboard() {
 
   // Progress bar fill + target marker
   const targetPct = profile.targetFoodCostPct;
+  DOM.kpiFoodCostGauge?.setAttribute('aria-valuenow', String(Math.round(summary.avgFoodCostPct * 10) / 10));
+  DOM.kpiFoodCostGauge?.setAttribute('aria-valuetext', `${formatPercent(summary.avgFoodCostPct)} current; ${formatPercent(targetPct)} target`);
   const fillWidth = Math.min(100, Math.max(10, (summary.avgFoodCostPct / 50) * 100));
   const targetPosWidth = Math.min(100, (targetPct / 50) * 100);
   DOM.kpiFoodCostFill.style.width = `${Math.min(fillWidth, targetPosWidth)}%`;

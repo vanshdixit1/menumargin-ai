@@ -190,7 +190,11 @@
               <span class="kpi-value" id="kpiAvgFoodCost">0.0%</span>
               <span class="kpi-delta" id="kpiFoodCostDelta">+0.0%</span>
             </div>
-            <div class="kpi-progress-bar">
+            <div class="kpi-progress-heading">
+              <span>Current vs target</span>
+              <span class="kpi-progress-scale">0–50%</span>
+            </div>
+            <div class="kpi-progress-bar" id="kpiFoodCostGauge" role="progressbar" aria-label="Average food cost compared with kitchen target" aria-valuemin="0" aria-valuemax="50" aria-valuenow="0">
               <div class="kpi-progress-fill" id="kpiFoodCostFill" style="width: 50%;"></div>
             </div>
             <svg class="kpi-sparkline sparkline-healthy" viewBox="0 0 120 24" aria-hidden="true"><path d="M2 18 C18 16, 22 14, 34 15 S50 10, 62 12 S79 8, 92 10 S108 5, 118 7"></path></svg>

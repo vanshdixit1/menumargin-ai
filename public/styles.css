@@ -1457,11 +1457,29 @@ code, kbd, samp, pre {
   position: relative;
 }
 
+.kpi-progress-heading {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.75rem;
+  color: var(--text-muted);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.kpi-progress-scale {
+  color: var(--text-subtle);
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 600;
+}
+
 .kpi-progress-fill {
   height: 100%;
   background: linear-gradient(90deg, var(--brand-primary), var(--gemma-purple));
   border-radius: var(--radius-pill);
-  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: width var(--motion-slow) var(--ease-standard);
   position: relative;
 }
 
