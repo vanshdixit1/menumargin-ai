@@ -13,6 +13,8 @@ Try the deployed app at **[menumargin-ai.onrender.com](https://menumargin-ai.onr
 
 The public demo uses the isolated seeded workspace. Create an account to set up a private business workspace with your own inventory, recipes, invoices, and margin targets.
 
+![MenuMargin AI cover](public/menumargin-cover.svg)
+
 ---
 
 ## 💡 The Real-World Problem: Silent Margin Death in Small Kitchens

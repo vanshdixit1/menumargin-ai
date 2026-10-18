@@ -1,0 +1,111 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="80" y1="40" x2="1530" y2="860" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0A0B16"/>
+      <stop offset="0.52" stop-color="#11142B"/>
+      <stop offset="1" stop-color="#201447"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientTransform="translate(1260 180) rotate(135) scale(600 720)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#836BFF" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#836BFF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#A78BFA"/>
+      <stop offset="1" stop-color="#4F46E5"/>
+    </linearGradient>
+    <linearGradient id="healthy" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#55D6A1"/>
+      <stop offset="1" stop-color="#8BE5BE"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="180%">
+      <feDropShadow dx="0" dy="24" stdDeviation="28" flood-color="#02030A" flood-opacity="0.55"/>
+    </filter>
+    <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="45"/>
+    </filter>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" stroke="#B6B9E8" stroke-opacity="0.08"/>
+    </pattern>
+  </defs>
+
+  <rect width="1600" height="900" rx="36" fill="url(#bg)"/>
+  <rect width="1600" height="900" rx="36" fill="url(#grid)"/>
+  <rect width="1600" height="900" rx="36" fill="url(#glow)"/>
+  <circle cx="1360" cy="160" r="170" fill="#6D5EF8" fill-opacity="0.16" filter="url(#soft)"/>
+  <circle cx="260" cy="790" r="190" fill="#25C79A" fill-opacity="0.08" filter="url(#soft)"/>
+
+  <g opacity="0.7">
+    <path d="M84 126H522" stroke="#8D86FF" stroke-opacity="0.35"/>
+    <path d="M84 140H312" stroke="#8D86FF" stroke-opacity="0.15"/>
+    <circle cx="62" cy="126" r="4" fill="#A78BFA"/>
+  </g>
+
+  <g transform="translate(88 184)">
+    <text fill="#A78BFA" font-family="Inter, Arial, sans-serif" font-size="21" font-weight="700" letter-spacing="4">MENUMARGIN AI</text>
+    <text y="92" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="72" font-weight="800" letter-spacing="-3">See the leak.</text>
+    <text y="170" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="72" font-weight="800" letter-spacing="-3">Save the margin.</text>
+    <text y="230" fill="#B8BCD5" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="500">Open-weight intelligence for independent kitchens.</text>
+    <g transform="translate(0 286)">
+      <rect width="230" height="56" rx="28" fill="url(#accent)"/>
+      <text x="28" y="36" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700">Powered by Gemma</text>
+      <circle cx="201" cy="28" r="5" fill="#B9AEFF"/>
+    </g>
+  </g>
+
+  <g transform="translate(716 108)" filter="url(#shadow)">
+    <rect width="780" height="630" rx="24" fill="#171A32" stroke="#7772BE" stroke-opacity="0.5"/>
+    <rect x="1" y="1" width="778" height="68" rx="23" fill="#202342"/>
+    <circle cx="30" cy="34" r="6" fill="#FF756F"/>
+    <circle cx="51" cy="34" r="6" fill="#F8C65F"/>
+    <circle cx="72" cy="34" r="6" fill="#58D5A2"/>
+    <text x="112" y="40" fill="#9297BB" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="600">MenuMargin AI / Dashboard</text>
+    <rect x="36" y="96" width="708" height="78" rx="14" fill="#352A2C" stroke="#D59B6C" stroke-opacity="0.55"/>
+    <circle cx="69" cy="135" r="18" fill="#D59B6C" fill-opacity="0.18"/>
+    <path d="M69 124V137M69 145V146" stroke="#F1BE8B" stroke-width="3" stroke-linecap="round"/>
+    <text x="103" y="129" fill="#F5D9B9" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700">Margin leakage detected</text>
+    <text x="103" y="152" fill="#BCA89C" font-family="Inter, Arial, sans-serif" font-size="13">Blueberry Tart • ingredient inflation pushed food cost above target</text>
+    <rect x="612" y="118" width="105" height="34" rx="17" fill="#765DF3"/>
+    <text x="635" y="140" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700">Fix with AI</text>
+    <text x="36" y="218" fill="#8F95BB" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="1.4">MARGIN HEALTH</text>
+    <g transform="translate(36 242)">
+      <rect width="220" height="132" rx="16" fill="#202342"/>
+      <text x="20" y="32" fill="#9BA1C0" font-family="Inter, Arial, sans-serif" font-size="13">Average food cost</text>
+      <text x="20" y="82" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="800">34.8%</text>
+      <text x="20" y="108" fill="#E5A36E" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700">+6.8% above target</text>
+    </g>
+    <g transform="translate(272 242)">
+      <rect width="220" height="132" rx="16" fill="url(#accent)"/>
+      <text x="20" y="32" fill="#DAD6FF" font-family="Inter, Arial, sans-serif" font-size="13">Monthly leakage</text>
+      <text x="20" y="82" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="40" font-weight="800">-$1,383</text>
+      <text x="20" y="108" fill="#DAD6FF" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700">recoverable this month</text>
+    </g>
+    <g transform="translate(508 242)">
+      <rect width="236" height="132" rx="16" fill="#202342"/>
+      <text x="20" y="32" fill="#9BA1C0" font-family="Inter, Arial, sans-serif" font-size="13">Gemma signal</text>
+      <text x="20" y="73" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="800">3 dishes at risk</text>
+      <path d="M20 103C44 98 53 104 72 85C90 67 106 86 124 72C144 57 154 75 175 48C186 34 197 40 216 20" stroke="url(#healthy)" stroke-width="4" stroke-linecap="round"/>
+    </g>
+    <text x="36" y="422" fill="#8F95BB" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="1.4">MENU DISHES / PLATE COST</text>
+    <rect x="36" y="445" width="708" height="1" fill="#7A80A8" fill-opacity="0.35"/>
+    <g font-family="Inter, Arial, sans-serif">
+      <text x="36" y="480" fill="#F5F6FF" font-size="15" font-weight="700">Blueberry Tart</text>
+      <text x="315" y="480" fill="#D8DBF2" font-size="15">$2.41</text>
+      <rect x="410" y="467" width="186" height="10" rx="5" fill="#353A62"/>
+      <rect x="410" y="467" width="132" height="10" rx="5" fill="#E5A36E"/>
+      <text x="618" y="480" fill="#E5A36E" font-size="13" font-weight="700">AT RISK</text>
+      <text x="36" y="530" fill="#F5F6FF" font-size="15" font-weight="700">Cinnamon Roll</text>
+      <text x="315" y="530" fill="#D8DBF2" font-size="15">$1.18</text>
+      <rect x="410" y="517" width="186" height="10" rx="5" fill="#353A62"/>
+      <rect x="410" y="517" width="96" height="10" rx="5" fill="url(#healthy)"/>
+      <text x="618" y="530" fill="#72DDAE" font-size="13" font-weight="700">HEALTHY</text>
+    </g>
+    <rect x="36" y="566" width="708" height="34" rx="17" fill="#25294A"/>
+    <circle cx="58" cy="583" r="6" fill="#8B7DFF"/>
+    <text x="77" y="588" fill="#BFC3DE" font-family="Inter, Arial, sans-serif" font-size="13">Invoice scanned • 14 ingredient prices normalized • 2 recommendations ready</text>
+  </g>
+
+  <g transform="translate(91 760)">
+    <text fill="#777D9E" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="600">REAL-TIME FOOD COSTING  /  INFLATION RADAR  /  PRIVATE WORKSPACES</text>
+  </g>
+  <text x="1494" y="820" text-anchor="end" fill="#777D9E" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="600">OPEN INNOVATION FOR SMALL KITCHENS</text>
+</svg>
